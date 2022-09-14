@@ -1,0 +1,6 @@
+.idea
+secret.py
+*.sqlite3
+/static/
+/media/
+*/migrations/
