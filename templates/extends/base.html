@@ -1,0 +1,39 @@
+{% load bootstrap3 %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'font-awesome/css/fontawesome.min.css' %}">
+
+    <title>
+        {% block title %}
+            Base title
+        {% endblock title %}
+    </title>
+
+    {% block css %}
+    {% endblock css %}
+
+    {% block style %}
+    {% endblock style %}
+
+</head>
+<body>
+{% block head %}
+{% endblock head %}
+
+{% block content %}
+{% endblock content %}
+
+{% block js %}
+{% endblock js %}
+
+</body>
+</html>

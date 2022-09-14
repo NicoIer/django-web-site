@@ -1,6 +1,10 @@
 .idea
 secret.py
 *.sqlite3
-/static/
+*.jpg
+*.png
 /media/
 */migrations/
+*/font-awesome/
+*/app01/
+*/bootstrap/
