@@ -12,9 +12,9 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 from pathlib import Path
 from learning_site import secret
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -27,9 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -37,8 +35,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bootstrap3',
+    'web.apps.WebConfig',
+    'app01',
 ]
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -70,17 +70,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'learning_site.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': secret.NAME,
+        'USER': secret.USER,
+        'PORT': secret.PORT,
+        'PASSWORD': secret.PASSWORD,
+        'HOST': secret.HOST
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -100,7 +102,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -112,16 +113,17 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 # 静态文件相关
 STATIC_URL = 'static/'
 STATIC_ROOT = 'static/'
+# 使用Django内建用户系统
+AUTH_USER_MODEL = 'app01.User'
 
 # 中间资源相关
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # 缓冲相关
 CACHES = {
@@ -134,8 +136,36 @@ CACHES = {
             'CULL_FREQUENCY': 2,  # 缓存条目到达最大值时,删除缓存的 1/x 的数据
         }
     },
+    "REDIS": {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': f'redis://{secret.REDIS_HOST}',  #
+        'PASSWORD': secret.REDIS_PASSWORD,
+        'OPTIONS': {
+            'max_connections': 1000,
+            'encoding': 'utf-8',
+        },
+    }
 
 }
+# 样式相关
+BOOTSTRAP3 = {
+    'include_jquery': True,
+}
+# 邮件配置
+# 配置邮件
+EMAIL_BACKEND = secret.EMAIL_BACKEND
+EMAIL_HOST = secret.EMAIL_HOST
+EMAIL_PORT = secret.EMAIL_PORT
+EMAIL_HOST_USER = secret.EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = secret.EMAIL_HOST_PASSWORD
+EMAIL_USE_TLS = secret.EMAIL_USE_TLS
+# 配置邮件
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.163.com'
+# EMAIL_PORT = 25
+# EMAIL_HOST_USER = 'nicoier233@163.com'
+# EMAIL_HOST_PASSWORD = MAIL163_PASSWORD
+# EMAIL_USE_TLS = False  # 是否使用加密(免费的邮箱一般..不提供)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
