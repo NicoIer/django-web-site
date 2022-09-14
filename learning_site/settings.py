@@ -37,7 +37,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bootstrap3',
     'web.apps.WebConfig',
-    'app01',
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -116,10 +115,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 # 静态文件相关
+STATICFILES_DIRS = (os.path.join(BASE_DIR,'static'),)
+
 STATIC_URL = 'static/'
-STATIC_ROOT = 'static/'
+# STATIC_ROOT = 'static/'
 # 使用Django内建用户系统
-AUTH_USER_MODEL = 'app01.User'
+AUTH_USER_MODEL = 'web.User'
 
 # 中间资源相关
 MEDIA_URL = '/media/'
