@@ -1,0 +1,51 @@
+{% extends "extends/base.html" %}
+{% block title %}
+    <title>User Register</title>
+{% endblock title %}
+{% block style %}
+    <style>
+    body{
+        margin:0 auto;
+        {#text-align: center;#}
+        {#margin:50% auto;#}
+        {#margin-left: 25%;#}
+        {#margin-right: 25%;#}
+    }
+    {#将文本居中#}
+    .center{
+        text-align:center;
+    }
+    {#消除左右padding#}
+    .no_align_padding{
+        padding-left: 0;
+        padding-bottom: 4px;
+    }
+    </style>
+{% endblock style %}
+{% block body %}
+    <div class="container">
+    <form class="form-signin">
+        <h2 class="form-signin-heading center">Please Register</h2>
+        {% csrf_token %}
+        {% for field in form %}
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+{#            formModel自动生成input标签#}
+{#            对验证码的检测#}
+            {% if field.name == 'code' %}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                <div class="clearfix">
+                    <div class="col-md-6 no_align_padding">{{ field }}</div>
+                    <div class="col-md-6 no_align_padding">
+                        <input type="button" value="click to get code" class="btn btn-default">
+                    </div>
+                </div>
+{#                非验证码的处理#}
+            {% else %}
+                {{ field }}
+            {% endif %}
+        {% endfor %}
+        <button class="btn btn-lg btn-primary btn-block" type="submit">register</button>
+    </form>
+    </div>
+
+{% endblock body %}
