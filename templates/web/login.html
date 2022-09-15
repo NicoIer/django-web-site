@@ -1,0 +1,32 @@
+{% extends 'extends/base.html' %}
+{% load static %}
+{% block title %}
+    Login
+{% endblock %}
+
+
+{% block css %}
+
+{% endblock css %}
+{% block style %}
+<link rel="stylesheet" href="{% static 'web/css/account.css' %}">
+{% endblock style %}
+
+{% block content %}
+<div class="account container">
+    <div class="title">
+        用户登录
+    </div>
+    <form id="login_form" method="post" class="form-signin" onsubmit="return false">
+        {% csrf_token %}
+        {% for field in form %}
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+        {% endfor %}
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+    </form>
+</div>
+{% endblock content%}
+
+{% block js %}
+{% endblock js %}
