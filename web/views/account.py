@@ -17,22 +17,30 @@ def register(request):
         # 注释掉这些 测试跳转
         if form.is_valid():
             instance = form.save()
-            return JsonResponse({'status': True, 'href': '/login/'})
+            return JsonResponse({'status': True, 'href': '/web/login/'})
         else:
             return JsonResponse({'status': False, 'error': form.errors})
 
 
 def send_mail(request):
+    # 这个路由存在的意义:当要求发送邮箱时做的操作
     if request.method == 'GET':
         email_form = EmailForm(data=request.GET)
         if email_form.is_valid():  # 验证通过则 发邮箱(同时存redis)
             return JsonResponse({'status': True})
         else:
             return JsonResponse({'status': False, 'error': email_form.errors})
-    elif request.method == 'POST':
-        return HttpResponse('success')
+    else:
+        pass
 
 
 def login(request):
-    form = LoginForm()
-    return render(request, 'web/login.html', locals())
+    if request.method == 'GET':
+        form = LoginForm()
+        return render(request, 'web/login.html', locals())
+    elif request.method == 'POST':
+        form = LoginForm(data=request.POST)
+        if form.is_valid():
+            return JsonResponse({'status': True, 'href': '/index/'})
+        else:
+            return JsonResponse({'status': False, 'error': form.errors})

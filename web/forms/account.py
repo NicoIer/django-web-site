@@ -1,6 +1,7 @@
 import random
 
 import redis
+from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
 from django_redis import get_redis_connection
 
@@ -23,7 +24,7 @@ class RegisterModelForm(BootstrapForm, forms.ModelForm):
         fields = ('username', 'password', 'confirm_password', 'email', 'code')
 
     def __init__(self, *args, **kwargs):
-        super(RegisterModelForm, self).__init__(*args,**kwargs)
+        super(RegisterModelForm, self).__init__(*args, **kwargs)
 
     def clean_username(self):
         username = self.cleaned_data['username']
@@ -79,17 +80,35 @@ class RegisterModelForm(BootstrapForm, forms.ModelForm):
 
 
 class LoginForm(BootstrapForm, forms.Form):
-    username = forms.EmailField(label='邮箱')
+    # 校验的顺序按照这里书写的顺序来
+    username = forms.CharField(label='用户名', max_length=150)
     password = forms.CharField(label='密码', widget=forms.PasswordInput())
 
     def __init__(self, *args, **kwargs):
         super(LoginForm, self).__init__(*args, **kwargs)
-        super(LoginForm, self).__init__()
+        self.user = None
 
+    def clean_password(self):
+        password = self.cleaned_data.get('password', None)
+        username = self.cleaned_data.get('username', None)
+        if username is None:  # 用户名有误,轮不到password报错
+            return password
+        else:
+            self.user = authenticate(username=username, password=password)
+            if self.user is None:
+                raise ValidationError('密码错误')
+            else:
+                return password
 
-class MailLoginForm(BootstrapForm, forms.Form):
-    def __init__(self, *args, **kwargs):
-        super(MailLoginForm, self).__init__(*args,**kwargs)
+    def clean_username(self):
+        username = self.cleaned_data.get('username', None)
+        if not username:
+            raise ValidationError('用户名格式有误')
+        else:
+            if User.objects.filter(username=username):
+                return username
+            else:
+                raise ValidationError('用户名不存在')
 
 
 class EmailForm(forms.Form):
@@ -106,12 +125,12 @@ class EmailForm(forms.Form):
 
         if User.objects.filter(email=email).exists():
             raise ValidationError('email already exists')
-        if self.send_mail(email) != 1:
+        if self.send_mail(email, self.state) != 1:
             raise ValidationError('验证码发送失败~~')
         return email
 
     @staticmethod
-    def send_mail(email) -> int:
+    def send_mail(email, state: str) -> int:
         # 在此发送邮件
         # 我的评价,在这里做邮件发送不好,耦合了
         code = random.randrange(1000, 9999)
@@ -119,7 +138,7 @@ class EmailForm(forms.Form):
         conn: redis.Redis = get_redis_connection('REDIS')
         if conn.set(email, code, ex=300, nx=True):
             return django_mail.send_mail(
-                subject='用户注册',
+                subject=f'User {state}',
                 from_email=settings.EMAIL_HOST_USER,
                 message=f'您的验证码{code}',
                 recipient_list=(email,)
