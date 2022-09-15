@@ -1,2 +1,1 @@
-# learning_site
-django学习项目
+# Django练手项目 learning-site
