@@ -115,7 +115,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 # 静态文件相关
-STATICFILES_DIRS = (os.path.join(BASE_DIR,'static'),)
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 
 STATIC_URL = 'static/'
 # STATIC_ROOT = 'static/'
@@ -160,7 +160,8 @@ EMAIL_PORT = secret.EMAIL_PORT
 EMAIL_HOST_USER = secret.EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = secret.EMAIL_HOST_PASSWORD
 EMAIL_USE_TLS = secret.EMAIL_USE_TLS
-# 配置邮件
+# 配置登录状态
+USER_STATE = {'register', 'logging'}
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_HOST = 'smtp.163.com'
 # EMAIL_PORT = 25
