@@ -24,11 +24,10 @@
 {#            formModel自动生成input标签#}
 {#            对验证码的检测#}
             {% if field.name == 'code' %}
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                 <div class="clearfix no_align_padding" >
                     <div class="col-md-6 no_align_padding">{{ field }}</div>
                     <div class="col-md-6 no_align_padding">
-                        <input type="button" value="click to get code" class="btn btn-default">
+                        <input type="button" value="click to get code" class="btn btn-default" id="btn_code">
                     </div>
                 </div>
 {#                非验证码的处理#}
@@ -40,3 +39,25 @@
     </form>
 </div>
 {% endblock content%}
+
+{% block js %}
+    <script>
+    $(function () {
+        bindCilkBtnCode()
+    })
+    function bindCilkBtnCode() {
+        $('#btn_code').click(function () {
+            //获取输入的mail
+            const email = $('#{{ form.email.id_for_label }}').val();
+            $.ajax({
+                url:'{% url 'send_mail' %}',
+                type:'get',
+                data:{'email':email,'state':"register"},
+                success:function (res) {
+                console.log(res)
+                }
+            })
+        })
+    }
+    </script>
+{% endblock js %}
