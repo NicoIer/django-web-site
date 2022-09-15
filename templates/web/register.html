@@ -9,120 +9,108 @@
 
 {% endblock css %}
 {% block style %}
-<link rel="stylesheet" href="{% static 'web/css/account.css' %}">
+    <link rel="stylesheet" href="{% static 'web/css/account.css' %}">
 {% endblock style %}
 
 {% block content %}
-<div class="account container">
-    <div class="title">
-        用户注册
-    </div>
-    <form id="register_form" method="post" class="form-signin" onsubmit="return false">
-        {% csrf_token %}
-        {% for field in form %}
-            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-{#            formModel自动生成input标签#}
-{#            对验证码的检测#}
-            {% if field.name == 'code' %}
-                <div class="clearfix no_align_padding">
-                    <div class="col-md-6 no_align_padding">{{ field }}</div>
-                    <div class="col-md-6 no_align_padding">
-                        <input type="button" value="click to get code" class="btn btn-default" id="btn_code">
+    <div class="account container">
+        <div class="title">
+            用户注册
+        </div>
+        <form novalidate id="register_form" method="post" class="form-signin" onsubmit="return false">
+            {% csrf_token %}
+            {% for field in form %}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {#            formModel自动生成input标签#}
+                {#            对验证码的检测#}
+                {% if field.name == 'code' %}
+                    <div class="clearfix no_align_padding">
+                        <div class="col-md-6 no_align_padding">{{ field }}</div>
+                        <div class="col-md-6 no_align_padding">
+                            <input type="button" value="click to get code" class="btn btn-default" id="btn_code"
+                                   onclick="codeBtnClick()">
+                        </div>
                     </div>
-                </div>
-{#                非验证码的处理#}
-            {% else %}
-                {{ field }}
-            {% endif %}
+                    {#                非验证码的处理#}
+                {% else %}
+                    {{ field }}
+                {% endif %}
 
-        {% endfor %}
-        <button class="btn btn-lg btn-primary btn-block" type="submit" id="id_register" onclick="onRegisterFormSubmit()">register</button>
-    </form>
-</div>
-{% endblock content%}
+            {% endfor %}
+            <button class="btn btn-lg btn-primary btn-block" type="submit" id="id_register"
+                    onclick="onRegisterFormSubmit()">register
+            </button>
+        </form>
+    </div>
+{% endblock content %}
 
 {% block js %}
-{#    <link rel="script" href="">#}
+    <script type="text/javascript" src="{% static 'web/js/util.js' %}"></script>
+
     <script>
-    $(function () {
-        bindCilkBtnCode()
-    })
-    function bindCilkBtnCode() {
-        $('#btn_code').click(function () {
+        function codeBtnClick() {
             const email = $('#{{ form.email.id_for_label }}').val();
             $.ajax({
-                url:'{% url 'send_mail' %}',
-                type:'get',
-                data:{'email':email,'state':"register"},
+                url: '{% url 'send_mail' %}',
+                type: 'get',
+                data: {'email': email, 'state': "register"},
                 //避免后端返回的是HttpResponse,其data为字符串数据
-                dataType:'JSON',//将服务端返回的数据,反序列化为字典
+                dataType: 'JSON',//将服务端返回的数据,反序列化为字典
                 //回调函数
-                success:function (res) {
-
-                    if (res.status)
-                    {//成功发送验证码
+                success: function (res) {
+                    if (res.status) {//成功发送验证码
                         sendEmailRemind()
-                    }
-                    else{
-                        $.each(res.error,function (key,value) {
+                    } else {
+                        $.each(res.error, function (key, value) {
                             const id_ = $('#id_' + key);
-                            setTimeout(function () {id_.popover('hide')},5000);
-                            id_.attr('data-content',value)
-                            id_.popover('show')
+                            setTimeout(function () {
+                                id_.popover('hide')
+                            }, 5000);
+                            id_.attr('data-content', value)
+                            id_.popover('show');
                         })
                     }
                 }
             })
-        })
-    }
-    {#<i class="bi bi-exclamation-circle"></i>#}
-    function sendEmailRemind() {
-        const $btn_code = $('#btn_code');
-        $btn_code.prop('disabled',true)
-        let time = 60;
-        setInterval(function (){
-            $btn_code.val(time);
-            --time;
-            if(time<1){
-                clearInterval()
-                $btn_code.val('click to get code').prop('disabled',false)
-            }
-        },1000);
-    }
+        }
 
-    function onRegisterFormSubmit() {
-        let register_data = $('#register_form').serializeArray();
-        let flag = true
-        $.each(register_data,function (idx,item) {
-            if(item.value==="")
-            {
-                flag = false;
-                return false;
-            }
-        })
-        if(flag)
-        {
+        function sendEmailRemind() {
+            const $btn_code = $('#btn_code');
+            $btn_code.prop('disabled', true)
+            let time = 60;
+            setInterval(function () {
+                $btn_code.val(time);
+                --time;
+                if (time < 1) {
+                    clearInterval()
+                    $btn_code.val('click to get code').prop('disabled', false)
+                }
+            }, 1000);
+        }
+
+        function onRegisterFormSubmit() {
+            const check_data = form_check('#register_form')
+            const register_data = check_data['data'];
             $.ajax({
                 url: '{% url 'register' %}',
                 type: 'post',
-                data:register_data,
-                success:function (res) {
-                    if(res.status){
+                data: register_data,
+                success: function (res) {
+                    if (res.status) {
                         location.href = res.href
+                    } else {
+                        //console.log(res.status)
+                        $.each(res.error, function (key, value) {
+                            const id_ = $('#id_' + key);
+                            setTimeout(function () {
+                                id_.popover('hide')
+                            }, 3000);
+                            id_.attr('data-content', value)
+                            id_.popover('show')
+                        })
                     }
-                    else{
-                        console.log(res.status)
-                        $.each(res.error,function (key,value) {
-                        const id_ = $('#id_' + key);
-                        setTimeout(function () {id_.popover('hide')},5000);
-                        id_.attr('data-content',value)
-                        id_.popover('show')
-                    })
-                    }
-
                 },
             })
         }
-    }
     </script>
 {% endblock js %}
