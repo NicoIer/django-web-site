@@ -139,15 +139,20 @@ CACHES = {
     },
     "REDIS": {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': f'redis://{secret.REDIS_HOST}',  #
-        'PASSWORD': secret.REDIS_PASSWORD,
+        'LOCATION': f'redis://{secret.REDIS_HOST}:{secret.REDIS_PORT}',  #
         'OPTIONS': {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
             'max_connections': 1000,
             'encoding': 'utf-8',
+            'PASSWORD': secret.REDIS_PASSWORD,
         },
     }
 
 }
+# SESSION相关
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
+
 # 样式相关
 BOOTSTRAP3 = {
     'include_jquery': True,

@@ -13,18 +13,18 @@
 {% endblock style %}
 
 {% block content %}
-<div class="account">
+<div class="account container">
     <div class="title">
         用户注册
     </div>
-    <form id="form" method="post" novalidate>
+    <form id="form" method="post" class="form-signin">
         {% csrf_token %}
         {% for field in form %}
             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
 {#            formModel自动生成input标签#}
 {#            对验证码的检测#}
             {% if field.name == 'code' %}
-                <div class="clearfix no_align_padding" >
+                <div class="clearfix no_align_padding">
                     <div class="col-md-6 no_align_padding">{{ field }}</div>
                     <div class="col-md-6 no_align_padding">
                         <input type="button" value="click to get code" class="btn btn-default" id="btn_code">
@@ -34,6 +34,7 @@
             {% else %}
                 {{ field }}
             {% endif %}
+
         {% endfor %}
         <button class="btn btn-lg btn-primary btn-block" type="submit">register</button>
     </form>
@@ -47,17 +48,47 @@
     })
     function bindCilkBtnCode() {
         $('#btn_code').click(function () {
-            //获取输入的mail
             const email = $('#{{ form.email.id_for_label }}').val();
             $.ajax({
                 url:'{% url 'send_mail' %}',
                 type:'get',
                 data:{'email':email,'state':"register"},
+                //避免后端返回的是HttpResponse,其data为字符串数据
+                dataType:'JSON',//将服务端返回的数据,反序列化为字典
+                //回调函数
                 success:function (res) {
-                console.log(res)
+                    if (res.status)
+                    {//成功发送验证码
+                        send_email_remind()
+                    }
+                    else{
+                        $.each(res.error,function (key,value) {
+                            if(key==='email')
+                            {//若邮件类型有错误 弹出对应提示框
+                                const id_email = $('#id_email');
+                                setTimeout(function () {$('#id_email').popover('hide')},5000)
+                                console.log(value)
+                                id_email.attr('data-content',value)
+                                id_email.popover('show')
+                            }
+                        })
+                    }
                 }
             })
         })
+    }
+    function send_email_remind() {
+        const $btn_code = $('#btn_code');
+        $btn_code.prop('disabled',true)
+        let time = 60;
+        setInterval(function (){
+            $btn_code.val(time);
+            --time;
+            if(time<1){
+                clearInterval()
+                $btn_code.val('click to get code').prop('disabled',false)
+            }
+        },1000);
     }
     </script>
 {% endblock js %}
