@@ -103,12 +103,12 @@
         if(flag)
         {
             $.ajax({
-                url: '',
+                url: '{% url 'register' %}',
                 type: 'post',
                 data:register_data,
                 success:function (res) {
                     if(res.status){
-                        console.log('OK')
+                        location.href = res.href
                     }
                     else{
                         console.log(res.status)

@@ -4,13 +4,14 @@ import redis
 from django.core.exceptions import ValidationError
 from django_redis import get_redis_connection
 
+from web.bootstrap import BootstrapForm
 from web.models import User
 from django import forms
 from django.conf import settings
 from django.core import mail as django_mail
 
 
-class RegisterModelForm(forms.ModelForm):
+class RegisterModelForm(BootstrapForm, forms.ModelForm):
     email = forms.EmailField(label='邮箱')
     password = forms.CharField(label='密码', widget=forms.PasswordInput())
     confirm_password = forms.CharField(label='确认密码', widget=forms.PasswordInput())
@@ -22,15 +23,7 @@ class RegisterModelForm(forms.ModelForm):
         fields = ('username', 'password', 'confirm_password', 'email', 'code')
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # name是变量名 , field.label是传参的label
-        for name, field in self.fields.items():
-            # if name == 'email':
-            field.widget.attrs['data-toggle'] = 'popover'
-            field.widget.attrs['data-placement'] = 'bottom'
-            field.widget.attrs['class'] = 'form-control'
-            field.widget.attrs['placeholder'] = f'{name}'
-            field.required = True
+        super(RegisterModelForm, self).__init__(*args,**kwargs)
 
     def clean_username(self):
         username = self.cleaned_data['username']
@@ -41,7 +34,7 @@ class RegisterModelForm(forms.ModelForm):
 
     def clean_password(self):
         password = self.cleaned_data['password']
-        if len(password)<8:
+        if len(password) < 8:
             raise ValidationError('密码过于简单')
         else:
             return password
@@ -67,7 +60,10 @@ class RegisterModelForm(forms.ModelForm):
 
     def clean_code(self):
         code = self.cleaned_data['code']
-        email = self.cleaned_data['email']
+        try:  #
+            email = self.cleaned_data['email']
+        except KeyError:
+            return code
         redis_code: bytes = get_redis_connection('REDIS').get(email)
         if not redis_code:
             raise ValidationError('验证码未发送')
@@ -80,6 +76,20 @@ class RegisterModelForm(forms.ModelForm):
         username, email, password = self.cleaned_data['username'], self.cleaned_data['email'], self.cleaned_data[
             'password']
         self.Meta.model.objects.create_user(username, email, password)
+
+
+class LoginForm(BootstrapForm, forms.Form):
+    username = forms.EmailField(label='邮箱')
+    password = forms.CharField(label='密码', widget=forms.PasswordInput())
+
+    def __init__(self, *args, **kwargs):
+        super(LoginForm, self).__init__(*args, **kwargs)
+        super(LoginForm, self).__init__()
+
+
+class MailLoginForm(BootstrapForm, forms.Form):
+    def __init__(self, *args, **kwargs):
+        super(MailLoginForm, self).__init__(*args,**kwargs)
 
 
 class EmailForm(forms.Form):

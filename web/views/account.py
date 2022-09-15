@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from django_redis import get_redis_connection
 from django.shortcuts import HttpResponse, HttpResponseRedirect, render
 
-from web.forms.account import RegisterModelForm, EmailForm
+from web.forms.account import RegisterModelForm, EmailForm, LoginForm
 
 
 def register(request):
@@ -13,11 +13,12 @@ def register(request):
         return render(request, 'web/register.html', locals())
     elif request.method == 'POST':
         form = RegisterModelForm(data=request.POST)
+        # return JsonResponse({'status': True, 'href': '/web/login/'})
+        # 注释掉这些 测试跳转
         if form.is_valid():
             instance = form.save()
-            return JsonResponse({'status': True})
+            return JsonResponse({'status': True, 'href': '/login/'})
         else:
-            print(form.errors)
             return JsonResponse({'status': False, 'error': form.errors})
 
 
@@ -30,3 +31,8 @@ def send_mail(request):
             return JsonResponse({'status': False, 'error': email_form.errors})
     elif request.method == 'POST':
         return HttpResponse('success')
+
+
+def login(request):
+    form = LoginForm()
+    return render(request, 'web/login.html', locals())

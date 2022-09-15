@@ -6,5 +6,6 @@ from web.views import account
 
 urlpatterns = [
     path('register/', account.register, name='register'),
+    path('login/', account.login, name='login'),
     path('send/mail/', account.send_mail, name='send_mail'),
 ]
