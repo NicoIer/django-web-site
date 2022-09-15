@@ -18,19 +18,68 @@ class RegisterModelForm(forms.ModelForm):
 
     class Meta:
         model = User
+        # 在前面的先校验
         fields = ('username', 'password', 'confirm_password', 'email', 'code')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # name是变量名 , field.label是传参的label
         for name, field in self.fields.items():
-            if name == 'email':
-                field.widget.attrs['data-toggle'] = 'popover'
-                field.widget.attrs['data-content'] = '邮箱格式错误'
-                field.widget.attrs['data-placement'] = 'bottom'
+            # if name == 'email':
+            field.widget.attrs['data-toggle'] = 'popover'
+            field.widget.attrs['data-placement'] = 'bottom'
             field.widget.attrs['class'] = 'form-control'
             field.widget.attrs['placeholder'] = f'{name}'
             field.required = True
+
+    def clean_username(self):
+        username = self.cleaned_data['username']
+        if User.objects.filter(username=username).exists():
+            raise ValidationError('用户名已存在')
+        else:
+            return username
+
+    def clean_password(self):
+        password = self.cleaned_data['password']
+        if len(password)<8:
+            raise ValidationError('密码过于简单')
+        else:
+            return password
+
+    def clean_confirm_password(self):
+        confirm_pwd = self.cleaned_data['confirm_password']
+        try:  # password或许还没有校验 cleaned_data中还没有password
+            password = self.cleaned_data['password']
+        except KeyError:
+            raise ValidationError('password未校验')
+
+        if confirm_pwd != password:
+            raise ValidationError('两次密码不一致')
+        else:
+            return confirm_pwd
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if User.objects.filter(email=email).exists():
+            raise ValidationError('邮箱已注册')
+        else:
+            return email
+
+    def clean_code(self):
+        code = self.cleaned_data['code']
+        email = self.cleaned_data['email']
+        redis_code: bytes = get_redis_connection('REDIS').get(email)
+        if not redis_code:
+            raise ValidationError('验证码未发送')
+        elif redis_code.decode('utf-8') != code.strip():
+            raise ValidationError('验证码错误')
+        else:
+            return code
+
+    def save(self, commit=True):
+        username, email, password = self.cleaned_data['username'], self.cleaned_data['email'], self.cleaned_data[
+            'password']
+        self.Meta.model.objects.create_user(username, email, password)
 
 
 class EmailForm(forms.Form):
@@ -51,12 +100,14 @@ class EmailForm(forms.Form):
             raise ValidationError('验证码发送失败~~')
         return email
 
-    def send_mail(self, email) -> int:
+    @staticmethod
+    def send_mail(email) -> int:
         # 在此发送邮件
         # 我的评价,在这里做邮件发送不好,耦合了
         code = random.randrange(1000, 9999)
+        print(code)
         conn: redis.Redis = get_redis_connection('REDIS')
-        if conn.set(email, code, ex=360, nx=True):
+        if conn.set(email, code, ex=300, nx=True):
             return django_mail.send_mail(
                 subject='用户注册',
                 from_email=settings.EMAIL_HOST_USER,

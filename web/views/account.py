@@ -7,8 +7,18 @@ from web.forms.account import RegisterModelForm, EmailForm
 
 def register(request):
     # return render(request)
-    form = RegisterModelForm()
-    return render(request, 'web/register.html', locals())
+
+    if request.method == 'GET':
+        form = RegisterModelForm()
+        return render(request, 'web/register.html', locals())
+    elif request.method == 'POST':
+        form = RegisterModelForm(data=request.POST)
+        if form.is_valid():
+            instance = form.save()
+            return JsonResponse({'status': True})
+        else:
+            print(form.errors)
+            return JsonResponse({'status': False, 'error': form.errors})
 
 
 def send_mail(request):
@@ -19,5 +29,4 @@ def send_mail(request):
         else:
             return JsonResponse({'status': False, 'error': email_form.errors})
     elif request.method == 'POST':
-        pass
-    return HttpResponse('success')
+        return HttpResponse('success')
