@@ -1,11 +1,14 @@
 class BootstrapForm:
-    def __init__(self, *args: object, **kwargs: object) -> object:
+    # TODO 修改这种方法 使其更加清晰
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # name是变量名 , field.label是传参的label
+        # 这个字段不是这个类有的...是子类的另一个父类有的属性
         for name, field in self.fields.items():
             # if name == 'email':
             field.widget.attrs['data-toggle'] = 'popover'
             field.widget.attrs['data-placement'] = 'bottom'
+            field.widget.attrs['data-trigger'] = 'manual'
             field.widget.attrs['class'] = 'form-control'
             field.widget.attrs['placeholder'] = f'{name}'
             field.required = True
