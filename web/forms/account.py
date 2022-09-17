@@ -1,4 +1,5 @@
 import random
+from typing import Optional
 
 import redis
 from django.contrib.auth import authenticate
@@ -25,6 +26,7 @@ class RegisterModelForm(BootstrapForm, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(RegisterModelForm, self).__init__(*args, **kwargs)
+        self.user = None
 
     def clean_username(self):
         username = self.cleaned_data['username']
@@ -65,7 +67,11 @@ class RegisterModelForm(BootstrapForm, forms.ModelForm):
             email = self.cleaned_data['email']
         except KeyError:
             return code
-        redis_code: bytes = get_redis_connection('REDIS').get(email)
+        # 获取连接
+        conn = get_redis_connection('REDIS')
+        redis_code: bytes = conn.get(email)
+        # 立即删除key
+        conn.delete(email)
         if not redis_code:
             raise ValidationError('验证码未发送')
         elif redis_code.decode('utf-8') != code.strip():
@@ -73,10 +79,17 @@ class RegisterModelForm(BootstrapForm, forms.ModelForm):
         else:
             return code
 
-    def save(self, commit=True):
+    def save(self, commit=True) -> Optional[User or None]:
         username, email, password = self.cleaned_data['username'], self.cleaned_data['email'], self.cleaned_data[
             'password']
-        self.Meta.model.objects.create_user(username, email, password)
+        try:
+            self.user = self.Meta.model.objects.create_user(username, email, password)
+        except Exception:
+            # 并行插入时 可能会有错误
+            self.add_error('username', ValidationError('用户名已存在'))
+            return None
+        else:
+            return self.user
 
 
 class LoginForm(BootstrapForm, forms.Form):
@@ -86,7 +99,7 @@ class LoginForm(BootstrapForm, forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(LoginForm, self).__init__(*args, **kwargs)
-        self.user = None
+        self.user: Optional[User, None] = None
 
     def clean_password(self):
         password = self.cleaned_data.get('password', None)
