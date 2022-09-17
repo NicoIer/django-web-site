@@ -6,6 +6,7 @@ from web.views import test
 urlpatterns = [
     path('register/', account.register, name='register'),
     path('login/', account.login_view, name='login'),
+    path('logout/',account.logout,name='logout'),
     path('send/mail/', account.send_mail, name='send_mail'),
     # 测试内容
     path('test/', test.test, name='test'),

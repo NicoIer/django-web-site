@@ -46,6 +46,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 添加自己的中间件
+    'web.middlewares.AuthMiddleware',
 ]
 
 ROOT_URLCONF = 'learning_site.urls'

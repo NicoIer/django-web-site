@@ -1,7 +1,7 @@
 from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
 
 
-def check_logging(func):
+def check_login(func):
     def warp(request: HttpRequest, *args, **kwargs):
         if request.session.get('uid', None) or request.COOKIES.get('uid', None):
             request.session['uid'] = request.COOKIES.get('uid')

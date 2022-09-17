@@ -1,12 +1,9 @@
-from django.http import JsonResponse
-from django_redis import get_redis_connection
-from django.shortcuts import HttpResponse, HttpResponseRedirect, render
-from django.contrib.auth import login, decorators
+from django.http import JsonResponse, HttpResponseRedirect
+from django.shortcuts import render
 
-from web.decorators import check_logging
+from web.decorators import check_login
 from web.forms.account import RegisterModelForm, EmailForm, LoginForm
-from web.models import User
-from web.views.util import _login_cookie_session
+from web.views.util import login_cookie_session, logout_cookie_session
 
 
 def register(request):
@@ -25,7 +22,7 @@ def register(request):
                 return JsonResponse({'status': False, 'error': form.errors})
             else:
                 response = JsonResponse({'status': True, 'href': '/index/'})
-                return _login_cookie_session(request, response, user=form.user, max_age=3600)
+                return login_cookie_session(request, response, user=form.user, max_age=3600)
         else:
             return JsonResponse({'status': False, 'error': form.errors})
 
@@ -52,8 +49,14 @@ def login_view(request):
         if form.is_valid():
             if form.user is not None:
                 response = JsonResponse({'status': True, 'href': '/index/'})
-                return _login_cookie_session(request, response, user=form.user, max_age=3600)
+                return login_cookie_session(request, response, user=form.user, max_age=3600)
             else:  # 极端情况下的并发请求
                 return JsonResponse({'status': False, 'error': form.errors})
         else:
             return JsonResponse({'status': False, 'error': form.errors})
+
+
+@check_login
+def logout(request):
+    response = HttpResponseRedirect('/index/')
+    return logout_cookie_session(request,response)

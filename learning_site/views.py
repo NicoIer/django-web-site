@@ -1,7 +1,12 @@
-from django.http import HttpResponse
-from web.decorators import check_logging
+from django.shortcuts import render
+
+from web.models import User
 
 
-@check_logging
 def index(request):
-    return HttpResponse('这是索引主页')
+    uid = request.session.get('uid', None)
+    if uid:
+        user = User.objects.get(id=uid)
+        return render(request, 'index.html', {'user':user})
+    else:
+        return render(request, 'index.html')
