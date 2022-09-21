@@ -76,4 +76,4 @@ def login_view(request):
 @check_login
 def logout(request):
     response = HttpResponseRedirect('/index/')
-    return logout_cookie_session(request,response)
+    return logout_cookie_session(request, response)

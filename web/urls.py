@@ -2,13 +2,12 @@ from django.urls import path
 from web.views import account, project
 from web.views import test
 
-
 urlpatterns = [
     path('register/', account.register, name='register'),
     path('login/', account.login_view, name='login'),
-    path('logout/',account.logout,name='logout'),
+    path('logout/', account.logout, name='logout'),
     path('send/mail/', account.send_mail, name='send_mail'),
-    path('project/',project.home),
+    path('project/', project.home, name='project'),
 
     # 测试内容
     path('test/', test.test, name='test'),

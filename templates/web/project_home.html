@@ -1,4 +1,22 @@
 {% extends 'extends/project-base.html' %}
-{% block content %}
 
+{% block css %}
+    <style>
+        body {
+            background-image: linear-gradient(to right , #30cfd0, #ffffff);
+        }
+        .project{
+            margin-bottom: 10px;
+        }
+    </style>
+{% endblock css %}
+
+
+{% block content %}
+<div class="container-fluid project">
+    <a class="btn btn-primary" role="button">
+        <span class="glyphicon glyphicon-plus"></span>
+        创建项目
+    </a>
+</div>
 {% endblock content %}
