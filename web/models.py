@@ -81,6 +81,10 @@ class Project(models.Model):
     creator = models.CharField(verbose_name='创建者', max_length=32)
     create_datetime = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
 
+    # 根据哪张表的哪些字段来索引
+    # 无法 增加 删除 修改
+    # project_user = models.ManyToManyField(to='User', through='ProjectUser', through_fields=('project', 'user'))
+
 
 class ProjectUser(models.Model):
     """

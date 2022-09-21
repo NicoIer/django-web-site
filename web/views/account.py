@@ -1,6 +1,10 @@
+import datetime
+import uuid
+
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render
 
+from web import models
 from web.decorators import check_login
 from web.forms.account import RegisterModelForm, EmailForm, LoginForm
 from web.views.util import login_cookie_session, logout_cookie_session
@@ -17,7 +21,20 @@ def register(request):
         # return JsonResponse({'status': True, 'href': '/web/login/'})
         # 注释掉这些 测试跳转
         if form.is_valid():
+            # save中在数据库添加了对应的用户
             form.save()
+
+            # 注册用户时 默认创建一个免费版订单
+            # models.Transaction.objects.create(
+            #     status=2,
+            #     order=str(uuid.uuid4()),
+            #     user=form.user,
+            #     price_policy=models.PricePolicy.objects.get(category=1),
+            #     count=0,
+            #     price=0,
+            #     start_datetime=datetime.datetime.now()
+            # )
+
             if form.user is None:
                 return JsonResponse({'status': False, 'error': form.errors})
             else:
