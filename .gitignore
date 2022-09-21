@@ -9,3 +9,5 @@ secret.py
 */app01/
 */bootstrap/
 /static/admin/
+/templates/web/test.html
+/web/views/test.py

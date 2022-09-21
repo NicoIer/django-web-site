@@ -7,8 +7,9 @@ class User(AbstractUser):
     """
     用户模型
     """
-    # 暂时不需要任何额外字段(phone等字段)
-    pass
+    # 服务等级字段
+    # service = models.ForeignKey(verbose_name='服务等级', to='PricePolicy', null=True, blank=True,
+    #                             on_delete=models.PROTECT)
 
 
 class PricePolicy(models.Model):
