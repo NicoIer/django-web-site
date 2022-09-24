@@ -1,7 +1,7 @@
 {% extends 'extends/base.html' %}
 {% load static %}
 {% block title %}
-    Login
+	Login
 {% endblock %}
 
 
@@ -9,31 +9,31 @@
 
 {% endblock css %}
 {% block style %}
-    <link rel="stylesheet" href="{% static 'web/css/account.css' %}">
+	<link rel="stylesheet" href="{% static 'web/css/account.css' %}">
 {% endblock style %}
 
 {% block content %}
-    <div class="account container">
-        <div class="title">
-            用户登录
-        </div>
-        <form novalidate id="login_form" method="post" class="form-signin" onsubmit="return false">
-            {% csrf_token %}
-            {% for field in form %}
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field }}
-            {% endfor %}
-            <br>
-            <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="LoginBtnClick()">Login</button>
-        </form>
-    </div>
+	<div class="account container">
+		<div class="title">
+			用户登录
+		</div>
+		<form novalidate id="login_form" method="post" class="form-signin" onsubmit="return false">
+			{% csrf_token %}
+			{% for field in form %}
+				<label for="{{ field.id_for_label }}">{{ field.label }}</label>
+				{{ field }}
+			{% endfor %}
+			<br>
+			<button class="btn btn-lg btn-primary btn-block" type="submit" onclick="LoginBtnClick()">Login</button>
+		</form>
+	</div>
 {% endblock content %}
 
 {% block js %}
-    <script type="text/javascript" src="{% static 'web/js/util.js' %}"></script>
-    <script>
+	<script type="text/javascript" src="{% static 'web/js/util.js' %}"></script>
+	<script>
         function LoginBtnClick() {
-            const check_data = form_check('#login_form')
+            const check_data = form_check('#login_form');
             const login_data = check_data['data'];
             $.ajax({
                 url: '{% url 'login' %}',
@@ -57,5 +57,5 @@
                 }
             })
         }
-    </script>
+	</script>
 {% endblock js %}

@@ -10,5 +10,5 @@ class BootstrapForm:
             field.widget.attrs['data-placement'] = 'bottom'
             field.widget.attrs['data-trigger'] = 'manual'
             field.widget.attrs['class'] = 'form-control'
-            field.widget.attrs['placeholder'] = f'{name}'
+            field.widget.attrs['placeholder'] = f'Place Enter {name}'
             field.required = True

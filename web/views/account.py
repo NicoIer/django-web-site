@@ -39,7 +39,7 @@ def register(request):
                 return JsonResponse({'status': False, 'error': form.errors})
             else:
                 response = JsonResponse({'status': True, 'href': '/index/'})
-                return login_cookie_session(request, response, user=form.user, max_age=3600)
+                return login_cookie_session(request, response, user=form.user, max_age=3600 * 24)
         else:
             return JsonResponse({'status': False, 'error': form.errors})
 
@@ -66,7 +66,7 @@ def login_view(request):
         if form.is_valid():
             if form.user is not None:
                 response = JsonResponse({'status': True, 'href': '/index/'})
-                return login_cookie_session(request, response, user=form.user, max_age=3600)
+                return login_cookie_session(request, response, user=form.user, max_age=3600 * 24)
             else:  # 极端情况下的并发请求
                 return JsonResponse({'status': False, 'error': form.errors})
         else:

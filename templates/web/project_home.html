@@ -1,22 +1,73 @@
 {% extends 'extends/project-base.html' %}
 
 {% block css %}
-    <style>
+	<style>
         body {
-            background-image: linear-gradient(to right , #30cfd0, #ffffff);
+            background-image: linear-gradient(to right, #30cfd0, #ffffff);
         }
-        .project{
+
+        .project {
             margin-bottom: 10px;
         }
-    </style>
+	</style>
 {% endblock css %}
 
 
 {% block content %}
-<div class="container-fluid project">
-    <a class="btn btn-primary" role="button">
-        <span class="glyphicon glyphicon-plus"></span>
-        创建项目
-    </a>
-</div>
+	<div class="container-fluid project">
+		<a class="btn btn-primary" role="button" data-toggle="modal" data-target="#addModal">
+			<span class="glyphicon glyphicon-plus"></span>
+			创建项目
+		</a>
+
+
+		<!-- Modal -->
+		<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+								aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title" id="myModalLabel">Modal title</h4>
+					</div>
+					<div class="modal-body">
+
+						<form id="create_form">
+							{% csrf_token %}
+							{% for field in form %}
+								<div class="form-group">
+									<label for="{{ field.id_for_label }}">{{ field.label }}</label>
+									{{ field }}
+									<span class="error-msg"></span>
+								</div>
+							{% endfor %}
+						</form>
+
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary" id="submit_btn" onclick="on_create_submit()">
+							Create
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
 {% endblock content %}
+
+{% block js %}
+	<script>
+        function on_create_submit() {
+            const check_data = form_check('#create_form');
+            const create_data = check_data['data'];
+            $.ajax({
+                url: {% url 'project_list' %},
+                type: 'post',
+                data: create_data,
+                dataType: "JSON"
+            })
+        }
+	</script>
+{% endblock js %}

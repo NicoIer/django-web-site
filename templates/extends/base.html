@@ -3,71 +3,73 @@
 <!DOCTYPE html>
 <html lang="zh-Hans">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
 
-    {% bootstrap_css %}
-    {% bootstrap_javascript %}
+	{% bootstrap_css %}
+	{% bootstrap_javascript %}
 
-{#    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">#}
-{#    <link rel="stylesheet" href="{% static 'font-awesome/css/fontawesome.min.css' %}">#}
+	{#    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">#}
+	{#    <link rel="stylesheet" href="{% static 'font-awesome/css/fontawesome.min.css' %}">#}
 
-    <title>
-        {% block title %}
-            Base title
-        {% endblock title %}
-    </title>
+	<title>
+		{% block title %}
+			Base title
+		{% endblock title %}
+	</title>
 
-    {% block css %}
-    {% endblock css %}
+	{% block css %}
+	{% endblock css %}
 
-    {% block style %}
-    {% endblock style %}
+	{% block style %}
+	{% endblock style %}
 
 </head>
 <body>
 {% block head %}
-    <nav class="navbar navbar-default">
-        <div class="container">
-          <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-              <span class="sr-only">Toggle navigation</span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="{% url 'index' %}">首页</a>
-          </div>
-          <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li class=""><a href="#">产品功能</a></li>
-                <li><a href="#">企业方案</a></li>
-                <li><a href="#">帮助文档</a></li>
-                <li><a href="#">价格</a></li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                {% if user.is_authenticated %}
-                    <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                        Hello {{ user.username }}
-                        <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="{% url 'project' %}">Project Home</a></li>
-                            <li><a href="#">个人主页</a></li>
-                            <li><a href="{% url 'logout' %}">退出</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li class="dropdown-header">Nav header</li>
-                            <li><a>xxxxx</a></li>
-                        </ul>
-                    </li>
-                {% else %}
-                    <li><a href="{% url 'login' %}">登录</a></li>
-                    <li><a href="{% url 'register' %}">注册</a></li>
-                {% endif %}
-            </ul>
-          </div><!--/.nav-collapse -->
-        </div><!--/.container-fluid -->
-    </nav>
+	<nav class="navbar navbar-default">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+				        aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="{% url 'index' %}">首页</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li class=""><a href="#">产品功能</a></li>
+					<li><a href="#">企业方案</a></li>
+					<li><a href="#">帮助文档</a></li>
+					<li><a href="#">价格</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					{% if user.is_authenticated %}
+						<li class="dropdown">
+							<a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+							   aria-expanded="false">
+								Hello {{ user.username }}
+								<span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="{% url 'project_list' %}">Project Home</a></li>
+								<li><a href="#">个人主页</a></li>
+								<li><a href="{% url 'logout' %}">退出</a></li>
+								<li role="separator" class="divider"></li>
+								<li class="dropdown-header">Nav header</li>
+								<li><a>xxxxx</a></li>
+							</ul>
+						</li>
+					{% else %}
+						<li><a href="{% url 'login' %}">登录</a></li>
+						<li><a href="{% url 'register' %}">注册</a></li>
+					{% endif %}
+				</ul>
+			</div><!--/.nav-collapse -->
+		</div><!--/.container-fluid -->
+	</nav>
 {% endblock head %}
 
 {% block content %}

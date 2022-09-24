@@ -7,7 +7,7 @@ urlpatterns = [
     path('login/', account.login_view, name='login'),
     path('logout/', account.logout, name='logout'),
     path('send/mail/', account.send_mail, name='send_mail'),
-    path('project/', project.home, name='project'),
+    path('project/', project.project_home, name='project_list'),
 
     # 测试内容
     path('test/', test.test, name='test'),
