@@ -10,6 +10,8 @@ class User(AbstractUser):
     # 服务等级字段
     # service = models.ForeignKey(verbose_name='服务等级', to='PricePolicy', null=True, blank=True,
     #                             on_delete=models.PROTECT)
+    # price_policy = models.ForeignKey(verbose_name='参与者', to='PricePolicy',default=None, on_delete=models.CASCADE)
+    # project_num = models.SmallIntegerField(verbose_name='拥有的用户名')
 
 
 class PricePolicy(models.Model):
@@ -21,7 +23,6 @@ class PricePolicy(models.Model):
         (2, '收费版'),
         (3, '其他')
     )
-
     category = models.SmallIntegerField(verbose_name='收费类型', default=2, choices=category_choices)
     title = models.CharField(verbose_name='标题', max_length=32)
     # PositiveIntegerField -> 正整数类型
@@ -75,10 +76,10 @@ class Project(models.Model):
     desc = models.CharField(verbose_name='项目描述', max_length=255, null=True, blank=True)
     star = models.BooleanField(verbose_name='星标', default=False)
 
-    bucket = models.CharField(verbose_name='minIO对象存储桶', max_length=128)
-    region = models.CharField(verbose_name='minIO对象存储区域', max_length=32)
+    bucket = models.CharField(verbose_name='minIO对象存储桶', max_length=128, default="")
+    region = models.CharField(verbose_name='minIO对象存储区域', max_length=32, default="")
 
-    join_count = models.SmallIntegerField(verbose_name='参与人数')
+    join_count = models.SmallIntegerField(verbose_name='参与人数', default=1)
     creator = models.CharField(verbose_name='创建者', max_length=32)
     create_datetime = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
 

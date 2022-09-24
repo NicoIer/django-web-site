@@ -1,4 +1,5 @@
 {% extends 'extends/project-base.html' %}
+{% load static %}
 
 {% block css %}
 	<style>
@@ -38,7 +39,7 @@
 								<div class="form-group">
 									<label for="{{ field.id_for_label }}">{{ field.label }}</label>
 									{{ field }}
-									<span class="error-msg"></span>
+									{#									<span class="error-msg"></span>#}
 								</div>
 							{% endfor %}
 						</form>
@@ -53,20 +54,38 @@
 				</div>
 			</div>
 		</div>
-
 	</div>
+
 {% endblock content %}
 
 {% block js %}
+
 	<script>
         function on_create_submit() {
             const check_data = form_check('#create_form');
             const create_data = check_data['data'];
             $.ajax({
-                url: {% url 'project_list' %},
+                url: '{% url 'project_list' %}',
                 type: 'post',
                 data: create_data,
-                dataType: "JSON"
+                dataType: "JSON",
+                success: function (res) {
+                    console.log(res);
+                    if (res.status) {
+                        console.log('成功')
+                        //刷新一下页面
+                        location.reload()
+                    } else {
+                        $.each(res.error, function (key, value) {
+                            const id_ = $('#id_' + key);
+                            setTimeout(function () {
+                                id_.popover('hide')
+                            }, 3000);
+                            id_.attr('data-content', value)
+                            id_.popover('show')
+                        })
+                    }
+                }
             })
         }
 	</script>

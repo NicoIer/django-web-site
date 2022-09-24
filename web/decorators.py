@@ -28,10 +28,11 @@ def check_login(func):
                 # ToDo 优化这个查询,耗时太长
                 transaction = models.Transaction.objects. \
                     filter(user=request.tracer.user, status=2).order_by('-id').first()
+
                 if transaction and transaction.end_datetime < datetime.datetime.now():
                     transaction = models.Transaction.objects. \
                         get(user=request.tracer.user, status=2, price_policy__category=1)
-                    request.tracer.price_policy = None if transaction else transaction.price_policy
+                    request.tracer.price_policy = transaction.price_policy
 
                 return func(request, *args, **kwargs)
         else:

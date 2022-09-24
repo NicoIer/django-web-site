@@ -81,7 +81,9 @@
 {% endblock head %}
 {% block content %}
 {% endblock content %}
-
+{% block base_js %}
+	<script type="text/javascript" src="{% static 'web/js/util.js' %}"></script>
+{% endblock base_js %}
 {% block js %}
 {% endblock js %}
 
