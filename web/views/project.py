@@ -1,11 +1,9 @@
-from django.db.models import QuerySet
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
 from web import models
-from web.utils import check_login, check_form
 from web.forms.project import ProjectModelForm
-from web.models import User, Project
-from django.http import JsonResponse, HttpRequest, HttpResponseRedirect, HttpResponse
+from web.utils import check_login, check_form
 
 
 @check_login
@@ -24,7 +22,7 @@ def project_home(request):
             if not create.star:
                 create_projects.append(create)
         # 当前用户加入的但没有被自己星标的项目
-        join_projects = [project for project in request.tracer.user.joined_project.all() \
+        join_projects = [project for project in request.tracer.user.joined_project.all()
                          if project not in star_projects]
 
         # check logging后 tracer必定是User
@@ -38,17 +36,20 @@ def project_home(request):
 
 @check_login
 def project_star(request, project_type: str, project_id: int):
-    print(f'type:{project_type}  project_id:{project_id}')
     if project_type == 'my':
         try:
             project = models.Project.objects.get(id=project_id, creator=request.tracer.user)
-            project.update(star=True)
-            request.tracer.user.stared_project.add(project_id)
         except Exception:
             # ToDo 对于异常的星标请求 需要做详细的额外处理
             return HttpResponse("????")
-        else:
+        if not project.star:  # 没有star才 star
+            project.star = True
+            project.save()
+            request.tracer.user.stared_project.add(project_id)
+
             return redirect('project_list')
+        else:
+            return HttpResponse("????")
     elif project_type == 'join':
         try:
             # 项目存在不存在
@@ -56,13 +57,49 @@ def project_star(request, project_type: str, project_id: int):
             # 且用户已经加入该项目
         except Exception:
             return HttpResponse("????")
-        else:
-            if project in request.tracer.user.joined_project.all():
-                # 则将该项目添加到用户的星标列表
+        if project in request.tracer.user.joined_project.all():
+            # 则将该项目添加到用户的星标列表
+            if project not in request.tracer.user.stared_project.all():
                 request.tracer.user.stared_project.add(project_id)
+
                 return redirect('project_list')
             else:
                 return HttpResponse("????")
+        else:
+            return HttpResponse("????")
 
     else:
+        return HttpResponse(status=404)
+
+
+@check_login
+def project_cancel_star(request, project_type: str, project_id: int):
+    if project_type == 'my':
+        try:
+            project = models.Project.objects.get(id=project_id, creator=request.tracer.user)
+        except Exception:
+            # ToDo 对于异常的星标请求 需要做详细的额外处理
+            return HttpResponse("????")
+        if project.star:
+            project.star = False
+            project.save()
+            request.tracer.user.stared_project.remove(project_id)
+            return redirect('project_list')
+        else:
+            return HttpResponse("????")
+    elif project_type == 'join':
+        try:
+            # 项目存在不存在
+            project = models.Project.objects.get(id=project_id)
+            # 且用户已经加入该项目
+        except Exception:
+            return HttpResponse("????")
+        if project in request.tracer.user.joined_project.all():
+            # 则将该项目从用户的星标列表移除
+            request.tracer.user.stared_project.remove(project_id)
+            return redirect('project_list')
+        else:
+            return HttpResponse("????")
+    else:
+
         return HttpResponse(status=404)
