@@ -1,8 +1,9 @@
 import datetime
 
-from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
+from django.http import HttpResponse, HttpRequest, HttpResponseRedirect, JsonResponse
 
 from web import models
+from web.forms.project import ProjectModelForm
 from web.models import User
 
 
@@ -42,3 +43,23 @@ def check_login(func):
             return HttpResponseRedirect('/web/login/')
 
     return warp
+
+
+def check_form(form: ProjectModelForm, request: HttpRequest) -> JsonResponse:
+    if form.is_valid():
+        # 验证通过
+        form.instance.creator = request.tracer.user
+        # 保存数据到数据库
+        form.save()
+        #
+        return_data = {
+            'status': True,
+            'error': form.errors
+        }
+        return JsonResponse(return_data)
+    else:
+        return_data = {
+            'status': False,
+            'error': form.errors
+        }
+        return JsonResponse(data=return_data)

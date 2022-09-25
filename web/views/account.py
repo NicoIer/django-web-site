@@ -5,7 +5,7 @@ from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render
 
 from web import models
-from web.decorators import check_login
+from web.utils import check_login
 from web.forms.account import RegisterModelForm, EmailForm, LoginForm
 from web.views.util import login_cookie_session, logout_cookie_session
 
