@@ -1,6 +1,7 @@
 import datetime
 
 from django.http import HttpResponse, HttpRequest, HttpResponseRedirect, JsonResponse
+from django.shortcuts import redirect
 
 from web import models
 from web.forms.project import ProjectModelForm
@@ -63,3 +64,28 @@ def check_form(form: ProjectModelForm, request: HttpRequest) -> JsonResponse:
             'error': form.errors
         }
         return JsonResponse(data=return_data)
+
+
+def update_project_star(request: HttpRequest, project_type: str, project_id: int) -> HttpResponse:
+    try:
+        project = models.Project.objects.get(id=project_id, creator=request.tracer.user)
+    except Exception:
+        return HttpResponse("???")
+    remove = project.star
+    project.star = not project.star
+    project.save()
+
+    if project_type == 'my':  #
+        if remove:
+            request.tracer.user.stared_project.remove(project_id)
+        else:
+            request.tracer.user.stared_project.add(project_id)
+        return redirect('project_list')
+    elif project_type == 'join' and project in request.tracer.user.joined_project.all():
+        if remove:
+            request.tracer.user.stared_project.remove(project_id)
+        else:
+            request.tracer.user.stared_project.add(project_id)
+        return redirect('project_list')
+    else:
+        return HttpResponse("?????")
