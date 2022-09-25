@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-from web import models
+from web import models, widgets
 from web.forms.bootstrap import BootstrapForm
 
 
@@ -10,8 +10,6 @@ class ProjectModelForm(BootstrapForm, forms.ModelForm):
         except_set = {'color'}
         super(ProjectModelForm, self).__init__(except_set, *args, **kwargs)
         self.tracer = tracer
-
-        self.fields['color'].widget.attrs['data-toggle'] = 'color-radio'
 
     class Meta:
         model = models.Project

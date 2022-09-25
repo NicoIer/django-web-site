@@ -1,5 +1,6 @@
 {% load bootstrap3 %}
 {% load static %}
+{% load project %}
 <!DOCTYPE html>
 <html lang="zh-Hans">
 <head>
@@ -38,18 +39,8 @@
 				<a class="navbar-brand" href="{% url 'index' %}">首页</a>
 			</div>
 			<div id="navbar" class="navbar-collapse collapse">
-				<ul class="nav navbar-nav">
-					<li class="dropdown">
-						<a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-						   aria-expanded="false">
-							Project
-							<span class="caret"></span>
-						</a>
-						<ul class="dropdown-menu">
-							<li><a>test</a></li>
-						</ul>
-					</li>
-				</ul>
+
+				{% all_project_list request %}
 
 				{#            右边的用户栏#}
 				<ul class="nav navbar-nav navbar-right">
