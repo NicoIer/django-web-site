@@ -18,8 +18,11 @@ def check_login(func):
             uid = request.COOKIES.get('uid')
             request.session['uid'] = uid
             request.session['username'] = request.COOKIES.get('username')
-            # 查询这个user 并存储
-            request.tracer.user = User.objects.get(id=uid)
+            try:
+                # 查询这个user 并存储
+                request.tracer.user = User.objects.get(id=uid)
+            except Exception:
+                return HttpResponseRedirect('/web/login/')
 
             if request.tracer.user is None:
                 return HttpResponseRedirect('/web/login/')
