@@ -7,15 +7,18 @@ from web.bootstrap import BootstrapForm
 
 class ProjectModelForm(BootstrapForm, forms.ModelForm):
     def __init__(self, tracer=None, *args, **kwargs):
-        super(ProjectModelForm, self).__init__(*args, **kwargs)
+        except_set = {'color'}
+        super(ProjectModelForm, self).__init__(except_set, *args, **kwargs)
         self.tracer = tracer
 
     class Meta:
         model = models.Project
         # 重写desc字段为
         fields = ['name', 'color', 'desc']
+        # 修改其展示方式
         widgets = {
-            'desc': forms.Textarea
+            'desc': forms.Textarea,
+            'color': forms.RadioSelect
         }
 
     # desc = forms.CharField(widget=forms.Textarea)
