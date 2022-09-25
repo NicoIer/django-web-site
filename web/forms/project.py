@@ -1,11 +1,8 @@
-from typing import Optional
-
 from django import forms
 from django.core.exceptions import ValidationError
 
 from web import models
 from web.bootstrap import BootstrapForm
-from web.models import User
 
 
 class ProjectModelForm(BootstrapForm, forms.ModelForm):
@@ -25,9 +22,14 @@ class ProjectModelForm(BootstrapForm, forms.ModelForm):
     def clean_name(self):
         # 用户创建的pro是否重名
         name = self.cleaned_data['name']
-        print(self.tracer.price_policy.project_num)
         if self.tracer and models.Project.objects.filter(name=name, creator=self.tracer.user).exists():
             raise ValidationError('项目名已存在')
         else:
             return name
         # 没有能够完成num操作
+
+    def save(self, commit=True):
+        super().save()
+        # 创建 和 加入是有区别的
+        # self.tracer.user.joined_project.add(self.instance)
+        self.tracer.user.save()
