@@ -2,6 +2,36 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
+class Project(models.Model):
+    """
+    项目表
+    """
+    COLOR_CHOICE = (
+        (1, '#56b8eb'),
+        (2, '#f28033'),
+        (3, '#ebc656'),
+        (4, '#a2d148'),
+        (5, '#20bfa4'),
+        (6, '#7461c2'),
+        (7, '#20bfa3')
+    )
+    name = models.CharField(verbose_name='项目名', max_length=32)
+    color = models.SmallIntegerField(verbose_name='颜色', choices=COLOR_CHOICE, default=1)
+    desc = models.CharField(verbose_name='项目描述', max_length=255, null=True, blank=True)
+    star = models.BooleanField(verbose_name='星标', default=False)
+
+    bucket = models.CharField(verbose_name='minIO对象存储桶', max_length=128, default="")
+    region = models.CharField(verbose_name='minIO对象存储区域', max_length=32, default="")
+
+    join_count = models.SmallIntegerField(verbose_name='参与人数', default=1)
+    creator = models.ForeignKey(to='User', verbose_name='创建者', max_length=32, on_delete=models.CASCADE)
+    create_datetime = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
+
+    # 根据哪张表的哪些字段来索引
+    # 无法 增加 删除 修改
+    # project_user = models.ManyToManyField(to='User', through='ProjectUser', through_fields=('project', 'user'))
+
+
 # Create your models here.
 class User(AbstractUser):
     """
@@ -12,6 +42,7 @@ class User(AbstractUser):
     #                             on_delete=models.PROTECT)
     # price_policy = models.ForeignKey(verbose_name='参与者', to='PricePolicy',default=None, on_delete=models.CASCADE)
     # project_num = models.SmallIntegerField(verbose_name='拥有的用户名')
+    joined_project = models.ManyToManyField(to='Project', verbose_name='参加的项目')
 
 
 class PricePolicy(models.Model):
@@ -56,46 +87,3 @@ class Transaction(models.Model):
     end_datetime = models.DateTimeField(verbose_name='结束时间', null=True, blank=True)
 
     create_datetime = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
-
-
-class Project(models.Model):
-    """
-    项目表
-    """
-    COLOR_CHOICE = (
-        (1, '#56b8eb'),
-        (2, '#f28033'),
-        (3, '#ebc656'),
-        (4, '#a2d148'),
-        (5, '#20bfa4'),
-        (6, '#7461c2'),
-        (7, '#20bfa3')
-    )
-    name = models.CharField(verbose_name='项目名', max_length=32)
-    color = models.SmallIntegerField(verbose_name='颜色', choices=COLOR_CHOICE, default=1)
-    desc = models.CharField(verbose_name='项目描述', max_length=255, null=True, blank=True)
-    star = models.BooleanField(verbose_name='星标', default=False)
-
-    bucket = models.CharField(verbose_name='minIO对象存储桶', max_length=128, default="")
-    region = models.CharField(verbose_name='minIO对象存储区域', max_length=32, default="")
-
-    join_count = models.SmallIntegerField(verbose_name='参与人数', default=1)
-    creator = models.CharField(verbose_name='创建者', max_length=32)
-    create_datetime = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
-
-    # 根据哪张表的哪些字段来索引
-    # 无法 增加 删除 修改
-    # project_user = models.ManyToManyField(to='User', through='ProjectUser', through_fields=('project', 'user'))
-
-
-class ProjectUser(models.Model):
-    """
-    项目参与者
-    """
-
-    user = models.ForeignKey(verbose_name='参与者', to='User', on_delete=models.CASCADE, related_name='user')
-    project = models.ForeignKey(verbose_name='项目', to='Project', on_delete=models.CASCADE)
-
-    star = models.BooleanField(verbose_name='星标', default=False)
-    inviter = models.ForeignKey(verbose_name='邀请者', to='User', on_delete=models.CASCADE, related_name='inviter')
-    create_datetime = models.DateTimeField(verbose_name='加入时间', auto_now_add=True)
