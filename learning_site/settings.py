@@ -55,7 +55,7 @@ ROOT_URLCONF = 'learning_site.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
+        'DIRS': [BASE_DIR / 'templates', ]
         ,
         'APP_DIRS': True,
         'OPTIONS': {
@@ -68,7 +68,6 @@ TEMPLATES = [
         },
     },
 ]
-
 WSGI_APPLICATION = 'learning_site.wsgi.application'
 
 # Database

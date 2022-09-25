@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
 from django_redis import get_redis_connection
 
-from web.bootstrap import BootstrapForm
+from web.forms.bootstrap import BootstrapForm
 from web.models import User
 from django import forms
 from django.conf import settings

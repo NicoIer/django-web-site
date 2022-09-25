@@ -68,6 +68,11 @@
             color: orange;
         }
 
+        .color-radio input[type='radio'] {
+            color: #0a53be;
+        }
+
+
 	</style>
 {% endblock css %}
 
@@ -188,7 +193,6 @@
 								<div class="form-group">
 									<label for="{{ field.id_for_label }}">{{ field.label }}</label>
 									{{ field }}
-									{#									<span class="error-msg"></span>#}
 								</div>
 							{% endfor %}
 						</form>
