@@ -39,11 +39,12 @@
 				<a class="navbar-brand" href="{% url 'index' %}">首页</a>
 			</div>
 			<div id="navbar" class="navbar-collapse collapse">
-				{% project_drop_menu request %}
-
+				{% block head-content %}
+					{% project_drop_menu request %}
+				{% endblock head-content %}
 				{#            右边的用户栏#}
 				<ul class="nav navbar-nav navbar-right">
-					{% if user.is_authenticated %}
+					{% if request.tracer.user.is_authenticated %}
 						<li><a href="#">工作台</a></li>
 						<li><a href="#">日历</a></li>
 						<li><a href="#"><span class="glyphicon glyphicon-question-sign"></span></a></li>
@@ -51,7 +52,7 @@
 						<li class="dropdown">
 							<a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
 							   aria-expanded="false">
-								Hello {{ user.username }}
+								Hello {{ request.tracer.user.username }}
 								<span class="caret"></span>
 							</a>
 							<ul class="dropdown-menu">

@@ -1,1 +1,7 @@
-dashboard
+{% extends 'extends/project-base.html' %}
+{% load project %}
+{% block head-content %}
+	<ul class="nav navbar-nav">
+		{% manage_nav_bar project %}
+	</ul>
+{% endblock head-content %}

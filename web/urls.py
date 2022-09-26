@@ -14,10 +14,10 @@ urlpatterns = [
     #
     re_path(r'^manage/(?P<project_id>\d+)/', include([
         path('dashboard/', manage.dashboard, name='dashboard'),
-        path('issues/', project.test, ),
-        path('statistics/', project.test),
-        path('file/', project.test),
-        path('wiki/', project.test)
+        path('issues/', manage.dashboard, name='issues'),
+        path('statistics/', manage.dashboard, name='statistics'),
+        path('file/', manage.dashboard, name='file'),
+        path('wiki/', manage.dashboard, name='wiki')
     ])),
     # 测试内容
     path('test/', test.test, name='test'),
