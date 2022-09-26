@@ -6,19 +6,24 @@
 			<span class="caret"></span>
 		</a>
 		<ul class="dropdown-menu">
+			{% if created_projects %}
+				<li class=""><span class="glyphicon glyphicon-th-list"></span> 我创建的</li>
+				<li role="separator" class="divider">
 
-			<li class=""><span class="glyphicon glyphicon-th-list"></span> 我创建的</li>
-			<li role="separator" class="divider"></li>
-			{% for project in created_projects %}
-				<li><a href="#">{{ project.name }}</a></li>
-			{% endfor %}
-			<li role="separator" class="divider"></li>
+					{% for project in created_projects %}
+						<li><a href="#">{{ project.name }}</a></li>
+					{% endfor %}
+			{% endif %}
+			{% if joined_projects %}
+				<li role="separator" class="divider"></li>
 
-			<li><span class="glyphicon glyphicon-cloud"></span> 我参与的</li>
-			{% for project in joined_projects %}
-				<li><a href="#">{{ project.name }}</a></li>
-			{% endfor %}
-			<li role="separator" class="divider"></li>
+				<li><span class="glyphicon glyphicon-cloud"></span> 我参与的</li>
+				{% for project in joined_projects %}
+					<li><a href="#">{{ project.name }}</a></li>
+				{% endfor %}
+				<li role="separator" class="divider"></li>
+			{% endif %}
+			<li><a href="{% url 'project_list' %}">所有项目</a></li>
 		</ul>
 	</li>
 </ul>

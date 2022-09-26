@@ -19,5 +19,4 @@ def project_drop_menu(request):
 @check_login
 @register.inclusion_tag('inclusion_tag/project_home_panel.html')
 def project_panel(projects: QuerySet, panel_name: str, project_type: str = ""):
-    print(project_type)
     return locals()
