@@ -23,20 +23,22 @@ def project_panel(projects: QuerySet, panel_name: str, project_type: str = ""):
 
 
 @register.inclusion_tag('inclusion_tag/manage_nav_bar.html')
-def manage_nav_bar(project):
+def manage_nav_bar(request, project):
     """
     :param project:
     :return:
     """
     # ToDo 优化这里的渲染逻辑 不要耦合
     titles = ('概览', '问题', '统计', 'wiki', '文件', '配置')
-    urls = ('dashboard', 'statistics', 'issues', 'file', 'wiki')
+    urls = ('dashboard', 'issues', 'statistics', 'wiki', 'file', 'settings')
 
     data = []
     for title, url in zip(titles, urls):
         tmp = dict()
         tmp['title'] = title
         tmp['url'] = reverse(url, kwargs={'project_id': project.id})
+        if request.path_info.startswith(tmp['url']):
+            tmp['class'] = 'active'
         data.append(tmp)
 
     content = {

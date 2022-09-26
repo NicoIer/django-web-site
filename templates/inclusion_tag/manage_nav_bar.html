@@ -1,3 +1,8 @@
+<style>
+    .active {
+        background-color: lightskyblue;
+    }
+</style>
 {% for item in data %}
-	<li><a href="{{ item.url }}">{{ item.title }}</a></li>
+	<li><a href="{{ item.url }} " class="{{ item.class }}">{{ item.title }}</a></li>
 {% endfor %}

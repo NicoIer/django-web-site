@@ -17,7 +17,8 @@ urlpatterns = [
         path('issues/', manage.dashboard, name='issues'),
         path('statistics/', manage.dashboard, name='statistics'),
         path('file/', manage.dashboard, name='file'),
-        path('wiki/', manage.dashboard, name='wiki')
+        path('wiki/', manage.dashboard, name='wiki'),
+        path('settings/', manage.dashboard, name='settings'),
     ])),
     # 测试内容
     path('test/', test.test, name='test'),
