@@ -1,6 +1,6 @@
 from django.urls import path, re_path, include
 
-from web.views import account, project, manage
+from web.views import account, project, manage, wiki
 from web.views import test
 
 urlpatterns = [
@@ -17,7 +17,7 @@ urlpatterns = [
         path('issues/', manage.dashboard, name='issues'),
         path('statistics/', manage.dashboard, name='statistics'),
         path('file/', manage.dashboard, name='file'),
-        path('wiki/', manage.dashboard, name='wiki'),
+        path('wiki/', wiki.home, name='wiki'),
         path('settings/', manage.dashboard, name='settings'),
     ])),
     # 测试内容

@@ -6,7 +6,6 @@ from web.utils import check_login
 register = Library()
 
 
-@check_login
 @register.inclusion_tag('inclusion_tag/project_home_drop_menu.html')
 def project_drop_menu(request):
     joined_projects = request.tracer.user.joined_project.all()
@@ -16,7 +15,6 @@ def project_drop_menu(request):
     return locals()
 
 
-@check_login
 @register.inclusion_tag('inclusion_tag/project_home_panel.html')
 def project_panel(projects: QuerySet, panel_name: str, project_type: str = ""):
     return locals()

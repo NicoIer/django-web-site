@@ -2,6 +2,16 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
+class Wiki(models.Model):
+    # 我是多的一方
+    project = models.ForeignKey(verbose_name='项目', to='Project', on_delete=models.CASCADE)
+    title = models.CharField(verbose_name='标题', max_length=32)
+    content = models.TextField(verbose_name='内容')
+
+    parent = models.ForeignKey(verbose_name='夫文章', on_delete=models.CASCADE, to='Wiki', related_name='parentWiki',
+                               default=None)
+
+
 class Project(models.Model):
     """
     项目表

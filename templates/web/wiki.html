@@ -1,0 +1,55 @@
+{% extends 'extends/project-base.html' %}
+{% load project %}
+
+{% block css %}
+	<style>
+        .title_list {
+            border-right: 1px solid #dddddd;
+            min-height: 500px;
+            margin-top: 10px;
+        }
+
+        .panel-body {
+            padding: 0;
+        }
+
+        .content {
+            border-left: 1px solid #dddddd;
+            min-height: 500px;
+            margin-top: 10px;
+            margin-left: -1px;
+        }
+
+        .test1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+	</style>
+{% endblock css %}
+{% block head-content %}
+	<ul class="nav navbar-nav">
+		{% manage_nav_bar request project %}
+	</ul>
+{% endblock head-content %}
+
+{% block content %}
+	<div class="container-fluid project">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<span class="glyphicon glyphicon-education"></span>
+				wiki
+			</div>
+			<div class="panel-body">
+				<div class="col-sm-3 title_list">
+					目录
+				</div>
+				<div class="col-sm-9 content">
+					<div class="test1">
+						<h4>{{ project.name }} Wiki文档库</h4>
+						<a href="#"><span class="glyphicon glyphicon-plus"></span>新建项目</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock content %}
