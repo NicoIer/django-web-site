@@ -1,0 +1,29 @@
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<span class="glyphicon glyphicon-cloud"></span>
+		{{ panel_name }}
+	</div>
+	<div class="panel-body {{ project_type }} ">
+		{% for project in projects %}
+			<div class="item">
+				<a href="{% url 'dashboard' project.id %}" class="title"
+				   style="background-color:{{ project.get_color_display }} ;">{{ project.name }}
+				</a>
+				<div class="info">
+					<div>
+						<a href="{% url 'project_star' project_type='join' project_id=project.id %}">
+							<span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+						</a>
+						<span>{{ project.creator.username }}</span>
+					</div>
+					<div>
+								<span class="glyphicon glyphicon-user" aria-hidden="true">
+									{{ project.join_count }}
+								</span>
+					</div>
+				</div>
+
+			</div>
+		{% endfor %}
+	</div>
+</div>

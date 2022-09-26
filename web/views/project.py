@@ -37,3 +37,7 @@ def project_home(request):
 @check_login
 def project_star(request, project_type: str, project_id: int):
     return update_project_star(request, project_type, project_id)
+
+
+def test(request, project_id, *args, **kwargs):
+    return HttpResponse('cddcd')

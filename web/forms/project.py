@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-from web import models, widgets
+from web import models
 from web.forms.bootstrap import BootstrapForm
 
 
