@@ -30,10 +30,9 @@ def add(request, project_id: int):
         return render(request, 'web/wiki_add.html', locals())
     elif request.method == 'POST':
         form = WikiModelForm(request.POST)
-
+        form.instance.project = project
+        form.instance.parent = None
         if form.is_valid():
-            form.instance.project = project
-            form.instance.parent = None
             form.save()
             return redirect('wiki', project_id)
         else:

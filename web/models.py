@@ -9,7 +9,7 @@ class Wiki(models.Model):
     content = models.TextField(verbose_name='内容')
 
     parent = models.ForeignKey(verbose_name='夫文章', on_delete=models.CASCADE, to='Wiki', related_name='parentWiki',
-                               default=None, null=True)
+                               default=None, null=True, blank=True)
 
 
 class Project(models.Model):
