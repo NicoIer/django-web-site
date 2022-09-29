@@ -8,7 +8,9 @@ from web.forms.bootstrap import BootstrapForm
 class ProjectModelForm(BootstrapForm, forms.ModelForm):
     def __init__(self, tracer=None, *args, **kwargs):
         except_set = {'color'}
-        super(ProjectModelForm, self).__init__(except_set, *args, **kwargs)
+        forms.ModelForm.__init__(self, *args, **kwargs)
+        BootstrapForm.__init__(self, except_set, *args, **kwargs)
+
         self.tracer = tracer
 
     class Meta:

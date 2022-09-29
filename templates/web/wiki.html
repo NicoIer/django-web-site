@@ -1,27 +1,84 @@
 {% extends 'extends/wiki_base.html' %}
 {% load project %}
-{% block panel-body %}
-	<div class="panel-body">
+{% block css %}
+	<style>
+        .title_list {
+            border-right: 1px solid #dddddd;
+            min-height: 500px;
+            margin-top: 10px;
+        }
 
-		<div class="col-sm-3 title_list">
-			{% block panel-body-left %}
-				{% wiki_directory request project_id %}
-			{% endblock panel-body-left %}
-		</div>
+        .panel-body {
+            padding: 0;
+        }
 
-		<div class="col-sm-9 content">
-			{% block panel-body-right %}
+        .content {
+            border-left: 1px solid #dddddd;
+            min-height: 500px;
+            margin-top: 10px;
+            margin-left: -1px;
+        }
+
+        .right_function_div {
+            display: inline;
+            float: right;
+        }
+	</style>
+	<style>
+        .title_list ul a {
+            display: block;
+            padding: 5px 0;
+        }
+	</style>
+{% endblock css %}
+
+{% block panel-head %}
+	<div class="container-fluid">
+		<div>
+			<span class="glyphicon glyphicon-education"></span>
+			wiki
+			<div class="right_function_div">
+				<a type="button" class="btn btn-success btn-xs" href="{% url 'wiki_add' project_id %}">
+					<span class="glyphicon glyphicon-plus"></span>
+					新建
+				</a>
 				{% if wiki %}
-					{{ wiki.content }}
-				{% else %}
-					<div>
-						<h4>{{ project.name }} Wiki文档库</h4>
-						<a href="{% url 'wiki_add' project_id %}"><span
-								class="glyphicon glyphicon-plus"></span>新建项目</a>
-					</div>
+					<a type="button" class="btn btn-info btn-xs"
+					   href="{% url 'wiki_edit' project_id wiki_id %}">
+						<span class="glyphicon glyphicon-pencil"></span>
+						编辑
+					</a>
+					{#					因为 这里 定向了两次 所以警告 ..... ToDo 优化它#}
+					<a type="button" class="btn btn-danger btn-xs"
+					   href="{% url 'wiki_delete' project_id wiki_id %}">
+						<span class="glyphicon glyphicon-trash"></span>
+						删除
+					</a>
 				{% endif %}
+			</div>
 
-			{% endblock panel-body-right %}
 		</div>
+	</div>
+{% endblock panel-head %}
+{% block panel-body %}
+	<div class="col-sm-3 title_list">
+		{% block panel-body-left %}
+			{% wiki_directory request project_id %}
+		{% endblock panel-body-left %}
+	</div>
+
+	<div class="col-sm-9 content">
+		{% block panel-body-right %}
+			{% if wiki %}
+				{{ wiki.content }}
+			{% else %}
+				<div>
+					<h4>{{ project.name }} Wiki文档库</h4>
+					<a href="{% url 'wiki_add' project_id %}"><span
+							class="glyphicon glyphicon-plus"></span>新建项目</a>
+				</div>
+			{% endif %}
+
+		{% endblock panel-body-right %}
 	</div>
 {% endblock panel-body %}

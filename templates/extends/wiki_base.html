@@ -2,39 +2,6 @@
 {% load project %}
 
 {% block css %}
-	<style>
-        .title_list {
-            border-right: 1px solid #dddddd;
-            min-height: 500px;
-            margin-top: 10px;
-        }
-
-        .panel-body {
-            padding: 0;
-        }
-
-        .content {
-            border-left: 1px solid #dddddd;
-            min-height: 500px;
-            margin-top: 10px;
-            margin-left: -1px;
-        }
-
-        .test1 {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .function {
-            text-align: right;
-        }
-	</style>
-	<style>
-        .title_list ul a {
-            display: block;
-            padding: 5px 0;
-        }
-	</style>
 {% endblock css %}
 {% block head-content %}
 	<ul class="nav navbar-nav">
@@ -47,20 +14,15 @@
 		<div class="container-fluid project">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<div>
-						<span class="glyphicon glyphicon-education"></span>
-						wiki
-
-					</div>
-					<div class="function ">
-						<a type="button" class="btn btn-success btn-xs" href="{% url 'wiki_add' project_id %}">
-							<span class="glyphicon glyphicon-plus"></span>
-							新建
-						</a>
-					</div>
+					{% block panel-head %}
+					{% endblock panel-head %}
 				</div>
-				{% block panel-body %}
-				{% endblock panel-body %}
+				<div class="panel-body">
+
+					{% block panel-body %}
+
+					{% endblock panel-body %}
+				</div>
 			</div>
 
 		</div>

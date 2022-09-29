@@ -10,6 +10,8 @@ manage_urls = [
     path('file/', manage.dashboard, name='file'),
     path('wiki/', wiki.home, name='wiki'),
     path('wiki/add', wiki.add, name='wiki_add'),
+    re_path(r'wiki/delete/(?P<wiki_id>\d+)', wiki.delete, name='wiki_delete'),
+    re_path(r'wiki/edit/(?P<wiki_id>\d+)', wiki.edit, name='wiki_edit'),
     path('settings/', manage.dashboard, name='settings'),
 ]
 

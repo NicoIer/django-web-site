@@ -98,7 +98,8 @@ class LoginForm(BootstrapForm, forms.Form):
     password = forms.CharField(label='密码', widget=forms.PasswordInput())
 
     def __init__(self, *args, **kwargs):
-        super(LoginForm, self).__init__(*args, **kwargs)
+        forms.Form.__init__(self, *args, **kwargs)
+        BootstrapForm.__init__(self, *args, **kwargs)
         self.user: Optional[User, None] = None
 
     def clean_password(self):
