@@ -26,12 +26,10 @@ def add(request, project_id: int):
         return redirect('project_list')
 
     if request.method == 'GET':
-        form = WikiModelForm()
+        form = WikiModelForm(project)
         return render(request, 'web/wiki_add.html', locals())
     elif request.method == 'POST':
-        form = WikiModelForm(request.POST)
-        form.instance.project = project
-        form.instance.parent = None
+        form = WikiModelForm(project, None, request.POST)
         if form.is_valid():
             form.save()
             return redirect('wiki', project_id)
