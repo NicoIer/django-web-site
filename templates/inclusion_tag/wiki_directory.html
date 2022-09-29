@@ -4,13 +4,21 @@
 	</ul>
 </div>
 <script>
+    const WIKI_DETAIL_URL = '{% url 'wiki' project_id %}'
+
     $.each({{ project_wikis|safe }}, function (idx, item) {
-        const li = $("<li>").attr('id', 'id_' + item.id).append($("<a>").text(item.title).append($("<ul>")));
+        const href = WIKI_DETAIL_URL + '?wiki_id=' + item.id;
+        // li 中有一个a a下一个是ul
+        // 逆天的js 需要细细的 学一下
+        const li = $("<li>").attr('id', 'id_' + item.id);
+        const a = li.append($("<a>").text(item.title).attr('href', href));
+        a.append($("<ul>"));
+
         if (!item.parent_id) {
             $('#directory').append(li);
         } else {
             // 大坑！！
-            $('#id_' + item.parent_id).children('a').children('ul').append(li);
+            $('#id_' + item.parent_id).children('ul').append(li);
         }
 
     })
