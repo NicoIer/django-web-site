@@ -43,3 +43,8 @@ def manage_nav_bar(request, project):
         'data': data
     }
     return content
+
+
+@register.inclusion_tag('inclusion_tag/wiki_directory.html')
+def wiki_directory(request):
+    return locals()

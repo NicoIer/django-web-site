@@ -1,1 +1,22 @@
 {% extends 'extends/wiki_base.html' %}
+{% load project %}
+{% block panel-body %}
+	<div class="panel-body">
+
+		<div class="col-sm-3 title_list">
+			{% block panel-body-left %}
+				{% wiki_directory request %}
+			{% endblock panel-body-left %}
+		</div>
+
+		<div class="col-sm-9 content">
+			{% block panel-body-right %}
+				<div class="test1">
+					<h4>{{ project.name }} Wiki文档库</h4>
+					<a href="{% url 'wiki_add' project_id %}"><span
+							class="glyphicon glyphicon-plus"></span>新建项目</a>
+				</div>
+			{% endblock panel-body-right %}
+		</div>
+	</div>
+{% endblock panel-body %}

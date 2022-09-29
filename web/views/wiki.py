@@ -26,12 +26,23 @@ def add(request, project_id: int):
         return redirect('project_list')
 
     if request.method == 'GET':
-        form = WikiModelForm(project)
+        form = WikiModelForm(project=project, method='get')
         return render(request, 'web/wiki_add.html', locals())
     elif request.method == 'POST':
-        form = WikiModelForm(project, None, request.POST)
+        form = WikiModelForm('post', project, None, request.POST)
         if form.is_valid():
             form.save()
             return JsonResponse({'status': True, 'error': form.errors})
         else:
             return JsonResponse({'status': False, 'error': form.errors})
+
+# @check_login
+# def wiki_directory(request, project_id):
+#     """
+#     wiki 的 目录
+#     :param request:
+#     :param project_id:
+#     :return:
+#     """
+#     projects = models.Wiki.objects.filter(project_id=project_id)
+#     pass
