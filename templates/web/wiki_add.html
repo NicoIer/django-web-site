@@ -1,13 +1,45 @@
 {% extends 'extends/wiki_base.html' %}
+{% load static %}
 {% block panel-body-right %}
-	<form method="post" novalidate>
+	<form method="post" novalidate id="add_wiki_form" onsubmit="return false">
 		{% csrf_token %}
 		{% for field in form %}
 			<div class="form-group">
-				<label for="{{ field.id_label }}">{{ field.label }}</label>
+				<label for="{{ field.id_for_label }}">{{ field.label }}</label>
 				{{ field }}
 			</div>
 		{% endfor %}
-		<button type="submit" class="btn btn-default">Submit</button>
+		<button type="submit" class="btn btn-default" onclick="SubmitBtnClick()">Submit</button>
 	</form>
 {% endblock panel-body-right %}
+
+{% block js %}
+	<script type="text/javascript" src="{% static 'web/js/util.js' %}"></script>
+	<script>
+        function SubmitBtnClick() {
+            const check_data = form_check('#add_wiki_form');
+            const wiki_data = check_data['data'];
+            $.ajax({
+                url: '{% url 'wiki_add' project.id %}',
+                type: 'post',
+                data: wiki_data,
+                success: function (res) {
+                    if (res.status) {
+                        console.log('成功')
+                        location.reload()
+                    } else {
+                        console.log('失败')
+                        $.each(res.error, function (key, value) {
+                            const id_ = $('#id_' + key);
+                            setTimeout(function () {
+                                id_.popover('hide')
+                            }, 3000);
+                            id_.attr('data-content', value)
+                            id_.popover('show')
+                        })
+                    }
+                }
+            })
+        }
+	</script>
+{% endblock js %}

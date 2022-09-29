@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 
 from web import models
@@ -32,6 +32,6 @@ def add(request, project_id: int):
         form = WikiModelForm(project, None, request.POST)
         if form.is_valid():
             form.save()
-            return redirect('wiki', project_id)
+            return JsonResponse({'status': True, 'error': form.errors})
         else:
-            return HttpResponse('添加失败')
+            return JsonResponse({'status': False, 'error': form.errors})
