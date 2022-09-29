@@ -1,15 +1,17 @@
-<ul id="directory">
-	<li>
-		<a>目录</a>
-		<ul>
-			<li>子目录</li>
-			<li>子目录</li>
-		</ul>
-	</li>
-	<li>
-		<a>目录2</a>
-		<ul>
-			<li>目录2子目录</li>
-		</ul>
-	</li>
-</ul>
+<div>
+	<ul id="directory">
+
+	</ul>
+</div>
+<script>
+    $.each({{ project_wikis|safe }}, function (idx, item) {
+        const li = $("<li>").attr('id', 'id_' + item.id).append($("<a>").text(item.title).append($("<ul>")));
+        if (!item.parent_id) {
+            $('#directory').append(li);
+        } else {
+            // 大坑！！
+            $('#id_' + item.parent_id).children('a').children('ul').append(li);
+        }
+
+    })
+</script>
