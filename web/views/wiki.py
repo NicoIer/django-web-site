@@ -35,14 +35,3 @@ def add(request, project_id: int):
             return JsonResponse({'status': True, 'error': form.errors})
         else:
             return JsonResponse({'status': False, 'error': form.errors})
-
-# @check_login
-# def wiki_directory(request, project_id):
-#     """
-#     wiki 的 目录
-#     :param request:
-#     :param project_id:
-#     :return:
-#     """
-#     projects = models.Wiki.objects.filter(project_id=project_id)
-#     pass

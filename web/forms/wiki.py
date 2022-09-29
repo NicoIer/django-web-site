@@ -24,7 +24,9 @@ class WikiModelForm(forms.ModelForm, BootstrapForm):
 
     class Meta:
         model = models.Wiki
-        exclude = ['project']
+        exclude = ['project', 'level']
 
     def save(self, commit=True):
+        if self.instance.parent:
+            self.instance.level = self.instance.parent.level + 1
         super(forms.ModelForm, self).save()

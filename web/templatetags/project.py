@@ -1,6 +1,10 @@
+import json
+
 from django.db.models import QuerySet
 from django.template import Library
 from django.urls import reverse
+
+from web import models
 from web.utils import check_login
 
 register = Library()
@@ -46,5 +50,13 @@ def manage_nav_bar(request, project):
 
 
 @register.inclusion_tag('inclusion_tag/wiki_directory.html')
-def wiki_directory(request):
+def wiki_directory(request, project_id):
+    # 获取项目的所有Wiki
+    project_wikis = list(
+        models.Wiki.objects.filter(project_id=project_id).values('id', 'title', 'parent_id').order_by('level',
+                                                                                                      'id')
+    )
+
+    # parent_wiki
+    project_wikis = json.dumps(project_wikis)
     return locals()

@@ -10,6 +10,7 @@ class Wiki(models.Model):
 
     parent = models.ForeignKey(verbose_name='夫文章', on_delete=models.CASCADE, to='Wiki', related_name='parentWiki',
                                default=None, null=True, blank=True)
+    level = models.IntegerField('级别', default=1)
 
     def __str__(self):
         return self.title
