@@ -119,10 +119,11 @@ USE_TZ = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 # 静态文件相关
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 
-STATIC_URL = 'static/'
-# STATIC_ROOT = 'static/'
+
+STATIC_URL = '/static/'
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static') # 和app有关
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]  # 和app无关
 # 使用Django内建用户系统
 AUTH_USER_MODEL = 'web.User'
 

@@ -6,11 +6,16 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width,initial-scale=1">
-	<link rel="stylesheet" href="{% static 'font-awesome/css/fontawesome.min.css' %}">
-	<link rel="script" href="{% static 'font-awesome/js/fontawesome.min.js' %}">
 	{% bootstrap_css %}
 	{% bootstrap_javascript %}
-
+	{% block markdown_link %}
+		<link rel="stylesheet" href="{% static 'editor.md/css/editormd.min.css' %}">
+		<script src="{% static 'editor.md/editormd.min.js' %}"></script>
+	{% endblock markdown_link %}
+	{% block fontawesome_link %}
+		<link rel="stylesheet" href="{% static 'font-awesome/css/fontawesome.min.css' %}">
+		<script src="{% static 'font-awesome/js/fontawesome.min.js' %}"></script>
+	{% endblock fontawesome_link %}
 	<title>
 		{% block title %}
 			Project

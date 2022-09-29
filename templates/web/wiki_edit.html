@@ -1,6 +1,6 @@
 {% extends 'web/wiki_form.html' %}
 {% load static %}
-{% block js %}
+{% block form_js %}
 
 	<script type="text/javascript" src="{% static 'web/js/util.js' %}"></script>
 	<script>
@@ -29,4 +29,5 @@
             })
         }
 	</script>
-{% endblock js %}
+
+{% endblock form_js %}

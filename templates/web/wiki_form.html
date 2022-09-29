@@ -6,14 +6,20 @@
 		{% for field in form %}
 			<div class="form-group">
 				<label for="{{ field.id_for_label }}">{{ field.label }}</label>
-				{{ field }}
+				{% if field.name == 'content' %}
+					<div id="markdown_edit" class="flex-fill">
+						{{ field }}
+					</div>
+				{% else %}
+					{{ field }}
+				{% endif %}
 			</div>
 		{% endfor %}
 		<button type="submit" class="btn btn-default" onclick="SubmitBtnClick()">Submit</button>
 	</form>
 {% endblock panel-body-right %}
 
-{% block js %}
+{% block form_js %}
 	<script type="text/javascript" src="{% static 'web/js/util.js' %}"></script>
 	<script>
         function SubmitBtnClick() {
@@ -41,5 +47,22 @@
                 }
             })
         }
+	
 	</script>
-{% endblock js %}
+{% endblock form_js %}
+{% block other_js %}
+	<script>
+        $(function () {
+            init_markdown()// init markdown
+        })
+
+        function init_markdown() {
+            // id + 配置
+            editormd('markdown_edit', {
+                placeholder: '请输入内容',
+                height: 500,
+                path: '{% static 'editor.md/lib' %}/',
+            })
+        }
+	</script>
+{% endblock other_js %}

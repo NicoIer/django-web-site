@@ -1,8 +1,6 @@
 {% extends 'extends/project-base.html' %}
 {% load project %}
 
-{% block css %}
-{% endblock css %}
 {% block head-content %}
 	<ul class="nav navbar-nav">
 		{% manage_nav_bar request project %}
@@ -28,3 +26,9 @@
 		</div>
 	{% endblock panel-content %}
 {% endblock content %}
+{% block js %}
+	{% block form_js %}
+	{% endblock form_js %}
+	{% block other_js %}
+	{% endblock other_js %}
+{% endblock js %}
