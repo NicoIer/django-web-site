@@ -15,6 +15,7 @@ class Tracer(object):
 
 
 def check_login(func):
+    # ToDo 太多的地方用到了 check_login 而 部分的查询是重复多余的 想要优化
     def warp(request: HttpRequest, *args, **kwargs):
         if request.session.get('uid', None) or request.COOKIES.get('uid', None):
             uid = request.COOKIES.get('uid')
