@@ -15,19 +15,18 @@ class WikiModelForm(forms.ModelForm, BootstrapForm):
             query_set = models.Wiki.objects.filter(project=project)
 
             if self.instance.id:
-                choices = [('', '---------')]
-                choices.extend(list(query_set.exclude(id=self.instance.id).values_list('id', 'title')))
+                choices = (list(query_set.exclude(id=self.instance.id).values_list('id', 'title')))
             else:
-                choices = [('', '---------')]
-                choices.extend(list(query_set.values_list('id', 'title')))
-
+                choices = (list(query_set.values_list('id', 'title')))
+            choices.append(('', '------'))
             self.fields['parent'].choices = choices
         elif method == 'post':
             self.instance.project = project
-            self.fields['parent'].required = False
 
         # BootstrapForm 并没有fields字段 实际上是从self的父类中找到的fields
         BootstrapForm.__init__(self, *args, **kwargs)
+        #
+        self.fields['parent'].required = False
 
     class Meta:
         model = models.Wiki
