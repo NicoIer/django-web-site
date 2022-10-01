@@ -1,11 +1,15 @@
 import datetime
+import time
 
+import minio.error
 from django.http import HttpResponse, HttpRequest, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
-
+from minio import Minio
 from web import models
 from web.forms.project import ProjectModelForm
 from web.models import User
+
+from django.conf import settings
 
 
 class Tracer(object):
@@ -47,8 +51,47 @@ def check_login(func):
     return warp
 
 
+class MinIoManager:
+    def __init__(self, user=settings.MINIO_ACCESS_KEY,
+                 password=settings.MINIO_SECRET_KEY,
+                 host=settings.MINIO_HOST,
+                 port=settings.MINIO_PORT,
+                 region=settings.MINIO_DEFAULT_REGION,
+                 secure=False
+                 ):
+
+        self.client = Minio('{}:{}'.format(host, port),
+                            access_key=user,
+                            secret_key=password,
+                            secure=secure,
+                            region=region,
+                            )
+
+    def create_bucket(self, bucket_name: str, location: str = None) -> bool:
+        try:
+            self.client.make_bucket(bucket_name, location)
+        except minio.error.S3Error:
+            return False
+
+        return True
+
+
+minio_manager = MinIoManager()
+
+
 def check_form(form: ProjectModelForm, request: HttpRequest) -> JsonResponse:
     if form.is_valid():
+        # 为项目创建一个Bucket
+        _ = models.Project.objects.last()
+        # toDo 这里可能会有并发异常...
+        bucket_name = '{}-{}'.format(request.tracer.user.id, (_.id + 1))
+        location = settings.MINIO_DEFAULT_REGION
+
+        minio_manager.create_bucket(bucket_name, location)
+        # 为项目属性赋值
+        form.instance.bucket = bucket_name
+        form.instance.region = location
+
         # 验证通过
         form.instance.creator = request.tracer.user
         # 保存数据到数据库

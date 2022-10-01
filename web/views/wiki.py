@@ -1,4 +1,3 @@
-import markdown
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -75,3 +74,14 @@ def edit(request, project_id, wiki_id):
             return JsonResponse({'status': True, 'errors': form.errors, 'href': url})
 
     return render(request, 'web/wiki_edit.html', locals())
+
+
+def wiki_upload(request, project_id):
+    '''
+    markdown 上传图片
+    :param request:
+    :param project_id:
+    :return:
+    '''
+    print('markdown上传图片了')
+    return None

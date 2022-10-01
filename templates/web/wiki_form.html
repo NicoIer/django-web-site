@@ -59,17 +59,22 @@
 
 {% block other_js %}
 	<script>
+        WIKI_UPLOAD_URL = {% url 'wiki_upload' project_id %};
         $(function () {
             init_markdown()// init markdown
-        })
+        });
 
         function init_markdown() {
             // id + 配置
             editormd('markdown_edit', {
                 placeholder: '请输入内容',
                 height: 500,
+                emoji: false,
+                imageUpload: true,
+                imageFormats: ['png', 'jpg', 'jpeg', 'gif'],
+                imageUploadURL: WIKI_UPLOAD_URL,
                 path: '{% static 'editor.md/lib' %}/',
-            })
+            });
         }
 	</script>
 {% endblock other_js %}

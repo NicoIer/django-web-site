@@ -15,7 +15,7 @@ class ProjectModelForm(BootstrapForm, forms.ModelForm):
 
     class Meta:
         model = models.Project
-        # 重写desc字段为
+        # 要填写的字段为
         fields = ['name', 'color', 'desc']
         # 修改其展示方式
         widgets = {

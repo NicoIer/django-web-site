@@ -33,7 +33,7 @@ class Project(models.Model):
     color = models.SmallIntegerField(verbose_name='颜色', choices=COLOR_CHOICE, default=1)
     desc = models.CharField(verbose_name='项目描述', max_length=255, null=True, blank=True)
     star = models.BooleanField(verbose_name='星标', default=False)
-
+    
     bucket = models.CharField(verbose_name='minIO对象存储桶', max_length=128, default="")
     region = models.CharField(verbose_name='minIO对象存储区域', max_length=32, default="")
 

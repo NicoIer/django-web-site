@@ -12,7 +12,9 @@ manage_urls = [
     path('wiki/add', wiki.add, name='wiki_add'),
     re_path(r'wiki/delete/(?P<wiki_id>\d+)', wiki.delete, name='wiki_delete'),
     re_path(r'wiki/edit/(?P<wiki_id>\d+)', wiki.edit, name='wiki_edit'),
+    path('wiki/upload/', wiki.wiki_upload, name='wiki_upload'),
     path('settings/', manage.dashboard, name='settings'),
+
 ]
 
 urlpatterns = [
@@ -25,6 +27,7 @@ urlpatterns = [
     re_path(r'project/star/(?P<project_type>\w+)/(?P<project_id>\d+)/$', project.project_star, name='project_star'),
     #
     re_path(r'^manage/(?P<project_id>\d+)/', include(manage_urls)),
+    # 文件上传
     # 测试内容
     path('test/', test.test, name='test'),
     # 获取数据 127.0.0.1：8000/web/get_data
