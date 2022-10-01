@@ -1,6 +1,6 @@
 import datetime
 import time
-
+from datetime import timedelta
 import minio.error
 from django.http import HttpResponse, HttpRequest, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
@@ -75,6 +75,21 @@ class MinIoManager:
 
         return True
 
+    def upload_iostream(self, bucket_name, obj_name, data, length) -> bool:
+        try:
+            self.client.put_object(bucket_name, obj_name, data, length)
+        except Exception:
+            raise
+
+        return True
+
+    def get_obj_get_url(self, bucket_name, obj_name, delta=timedelta(days=2)):
+        try:
+            url = self.client.presigned_get_object(bucket_name, obj_name, delta)
+        except Exception:
+            raise
+        return url
+
 
 minio_manager = MinIoManager()
 
@@ -125,7 +140,7 @@ def update_project_star(request: HttpRequest, project_type: str, project_id: int
             request.tracer.user.stared_project.remove(project_id)
         else:
             request.tracer.user.stared_project.add(project_id)
-        
+
         return redirect('project_list')
     else:
         return HttpResponse("?????")

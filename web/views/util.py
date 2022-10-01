@@ -1,6 +1,9 @@
-from django.http import HttpResponse
+import hashlib
 
+from django.http import HttpResponse
+import uuid
 from web.models import User
+from django.conf import settings
 
 
 def login_cookie_session(request, response, user: User, max_age: int = 3600 * 24):
@@ -18,3 +21,13 @@ def logout_cookie_session(request, response: HttpResponse):
     response.delete_cookie('username')
     response.delete_cookie('uid')
     return response
+
+
+def md5(string) -> str:
+    hash_obj = hashlib.md5(settings.SECRET_KEY.encode('utf-8'))
+    hash_obj.update(string.encode('utf-8'))
+    return hash_obj.hexdigest()
+
+
+def uid(string: str):
+    return md5("{}-{}".format(uuid.uuid4(), string))

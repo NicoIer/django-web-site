@@ -1,11 +1,14 @@
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
-
+from django.views.decorators.clickjacking import xframe_options_exempt
+from django.views.decorators.clickjacking import xframe_options_deny
+from django.views.decorators.clickjacking import xframe_options_sameorigin
 from web import models
 from web.forms.wiki import WikiModelForm
 from web.utils import check_login
 from django.views.decorators.csrf import csrf_exempt
+from web.views import util
 
 
 @check_login
@@ -77,6 +80,10 @@ def edit(request, project_id, wiki_id):
     return render(request, 'web/wiki_edit.html', locals())
 
 
+from web.utils import minio_manager
+
+
+@xframe_options_sameorigin
 @csrf_exempt
 def wiki_upload(request, project_id):
     """
@@ -85,9 +92,20 @@ def wiki_upload(request, project_id):
     :param project_id:
     :return:
     """
-    image = request.FILES.get('editmd-image-file')
-    project = models.Project.objects.get(project_id=project_id)
-    print(project.bucket)
-    print(project.region)
-    print('markdown上传图片了')
-    return JsonResponse({})
+    image = request.FILES.get('editormd-image-file')
+    project = models.Project.objects.get(id=project_id)
+    # image.file
+    file_name = util.uid('{}.{}'.format("", image.name.rsplit('.'[-1])))
+    # response data
+    data = {'success': 0, 'message': None, 'url': None}
+    try:
+        # 上传文件
+        minio_manager.upload_iostream(project.bucket, file_name, image.file, image.size)
+        # 获取文件url
+        data['url'] = minio_manager.get_obj_get_url(project.bucket, file_name)
+        # 返回的数据
+        data['success'] = 1
+    except Exception:
+        return JsonResponse(data)
+
+    return JsonResponse(data)
