@@ -12,3 +12,4 @@ secret.py
 /templates/web/test.html
 /web/views/test.py
 */editor.md/
+scripts.py
