@@ -24,7 +24,7 @@ urlpatterns = [
     path('send/mail/', account.send_mail, name='send_mail'),
     path('project/', project.project_home, name='project_list'),
     # star/join/id
-    re_path(r'project/star/(?P<project_type>\w+)/(?P<project_id>\d+)/$', project.project_star, name='project_star'),
+    re_path(r'project_star/(?P<project_type>\w+)/(?P<project_id>\d+)/$', project.project_star, name='project_star'),
     #
     re_path(r'^manage/(?P<project_id>\d+)/', include(manage_urls)),
     # 文件上传

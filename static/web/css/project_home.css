@@ -58,7 +58,7 @@ body {
     font-size: 18px;
 }
 
-.star_project > .item > .info .glyphicon-star {
+.star {
     font-size: 18px;
     color: orange;
 }

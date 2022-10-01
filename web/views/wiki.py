@@ -5,6 +5,7 @@ from django.urls import reverse
 from web import models
 from web.forms.wiki import WikiModelForm
 from web.utils import check_login
+from django.views.decorators.csrf import csrf_exempt
 
 
 @check_login
@@ -76,12 +77,17 @@ def edit(request, project_id, wiki_id):
     return render(request, 'web/wiki_edit.html', locals())
 
 
+@csrf_exempt
 def wiki_upload(request, project_id):
-    '''
+    """
     markdown 上传图片
     :param request:
     :param project_id:
     :return:
-    '''
+    """
+    image = request.FILES.get('editmd-image-file')
+    project = models.Project.objects.get(project_id=project_id)
+    print(project.bucket)
+    print(project.region)
     print('markdown上传图片了')
-    return None
+    return JsonResponse({})

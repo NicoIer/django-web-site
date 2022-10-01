@@ -1,11 +1,6 @@
 {% extends 'web/wiki.html' %}
 {% load static %}
 
-{% block markdown_link %}
-	<link rel="stylesheet" href="{% static 'editor.md/css/editormd.min.css' %}">
-	<script src="{% static 'editor.md/editormd.min.js' %}"></script>
-{% endblock markdown_link %}
-
 {% block panel-body-right %}
 	<form method="post" novalidate id="add_wiki_form" onsubmit="return false">
 		{% csrf_token %}
@@ -59,7 +54,7 @@
 
 {% block other_js %}
 	<script>
-        WIKI_UPLOAD_URL = {% url 'wiki_upload' project_id %};
+        WIKI_UPLOAD_URL = '{% url 'wiki_upload' project_id %}';
         $(function () {
             init_markdown()// init markdown
         });
