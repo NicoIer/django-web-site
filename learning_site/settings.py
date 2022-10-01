@@ -157,6 +157,8 @@ CACHES = {
 # SESSION相关
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
+# session存储时间
+SESSION_COOKIE_AGE = 60 * 10  # 存储时间
 
 # 样式相关
 BOOTSTRAP3 = {
@@ -172,8 +174,14 @@ EMAIL_HOST_PASSWORD = secret.EMAIL_HOST_PASSWORD
 EMAIL_USE_TLS = secret.EMAIL_USE_TLS
 # 配置登录状态
 USER_STATE = {'register', 'logging'}
-# session存储时间
-SESSION_COOKIE_AGE = 60 * 10  # 存储时间
+
+# MINIO相关
+MINIO_HOST = secret.MINIO_HOST
+MINIO_PORT = secret.MINIO_PORT
+MINIO_ACCESS_KEY = secret.MINIO_ACCESS_KEY
+MINIO_SECRET_KEY = secret.MINIO_SECRET_KEY
+MINIO_DEFAULT_REGION = secret.MINIO_DEFAULT_REGION
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
