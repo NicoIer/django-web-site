@@ -1,5 +1,18 @@
 {% extends 'extends/wiki_base.html' %}
 {% load project %}
+{% load static %}
+{% block markdown_link %}
+	<link rel="stylesheet" href="{% static 'editor.md/css/editormd.preview.min.css' %}">
+
+	<script src="{% static 'editor.md/lib/prettify.min.js' %}"></script>
+	<script src="{% static 'editor.md/lib/raphael.min.js' %}"></script>
+	<script src="{% static 'editor.md/lib/underscore.min.js' %}"></script>
+	<script src="{% static 'editor.md/lib/sequence-diagram.min.js' %}"></script>
+	<script src="{% static 'editor.md/lib/flowchart.min.js' %}"></script>
+	<script src="{% static 'editor.md/lib/jquery.flowchart.min.js' %}"></script>
+	<script src="{% static 'editor.md/lib/marked.min.js' %}"></script>
+	<script src="{% static 'editor.md/editormd.min.js' %}"></script>
+{% endblock markdown_link %}
 {% block css %}
 	<style>
         .title_list {
@@ -71,6 +84,11 @@
 		{% block panel-body-right %}
 			{% if wiki %}
 				{{ wiki.content }}
+				<div class="flex-fill" id="preview_markdown">
+					<textarea>
+						{{ wiki.content }}
+					</textarea>
+				</div>
 			{% else %}
 				<div>
 					<h4>{{ project.name }} Wiki文档库</h4>
@@ -82,3 +100,20 @@
 		{% endblock panel-body-right %}
 	</div>
 {% endblock panel-body %}
+
+
+{% block other_js %}
+	<script>
+        $(function () {
+            init_preview_markdown()// init markdown
+        })
+
+        function init_preview_markdown() {
+            // id + 配置
+            editormd.markdownToHTML('preview_markdown', {
+                htmlDecode: "style,script,iframe",
+            })
+        }
+
+	</script>
+{% endblock other_js %}

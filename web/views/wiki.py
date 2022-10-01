@@ -48,7 +48,6 @@ def add(request, project_id: int):
         return render(request, 'web/wiki_form.html', locals())
     elif request.method == 'POST':
         form = WikiModelForm(method='post', project=project, data=request.POST)
-        form.instance.project = project
         if form.is_valid():
             form.save()
             return JsonResponse({'status': True, 'error': form.errors})
@@ -67,7 +66,7 @@ def edit(request, project_id, wiki_id):
     if request.method == 'GET':
         form = WikiModelForm(instance=wiki, method='get', project=project)
     elif request.method == 'POST':
-        form = WikiModelForm(instance=wiki, data=request.POST, method='get', project=project)
+        form = WikiModelForm(instance=wiki, data=request.POST, method='post', project=project)
         if form.is_valid():
             wiki.save()
             # 不好看!

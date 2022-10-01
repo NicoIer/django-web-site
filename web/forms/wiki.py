@@ -1,3 +1,5 @@
+from django.forms import ModelChoiceField
+
 from web import models
 from django import forms
 from web.forms.bootstrap import BootstrapForm
@@ -8,22 +10,26 @@ class WikiModelForm(forms.ModelForm, BootstrapForm):
     def __init__(self, project, method, *args, **kwargs):
         # super调用 学到了没
         forms.ModelForm.__init__(self, *args, **kwargs)
+
+        if method == 'get':
+            if self.instance.id:
+                choices = models.Wiki.objects.filter(project=project). \
+                    exclude(id=self.instance.id).values_list('id', 'title')
+            else:
+                choices = models.Wiki.objects.filter(project=project).values_list('id', 'title')
+            self.fields['parent'].choices = choices
+        elif method == 'post':
+            self.instance.project = project
+            self.fields['parent'].required = False
+
         # BootstrapForm 并没有fields字段 实际上是从self的父类中找到的fields
         BootstrapForm.__init__(self, *args, **kwargs)
-        #
-        if method == 'get':
-            parent_wikis = [("", 'NULL')]
-            parent_wikis.extend(list(models.Wiki.objects.filter(project=project).values_list('id', 'title')))
-            self.fields['parent'].choices = parent_wikis
-
-    def is_valid(self):
-        return super(forms.ModelForm, self).is_valid()
 
     class Meta:
         model = models.Wiki
         exclude = ['project', 'level']
 
     def save(self, commit=True):
-        if self.instance.parent:
+        if self.instance.parent and self.instance.parent != self.instance:
             self.instance.level = self.instance.parent.level + 1
         super(forms.ModelForm, self).save()

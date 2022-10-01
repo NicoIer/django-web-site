@@ -1,5 +1,11 @@
 {% extends 'web/wiki.html' %}
 {% load static %}
+
+{% block markdown_link %}
+	<link rel="stylesheet" href="{% static 'editor.md/css/editormd.min.css' %}">
+	<script src="{% static 'editor.md/editormd.min.js' %}"></script>
+{% endblock markdown_link %}
+
 {% block panel-body-right %}
 	<form method="post" novalidate id="add_wiki_form" onsubmit="return false">
 		{% csrf_token %}
@@ -50,6 +56,7 @@
 	
 	</script>
 {% endblock form_js %}
+
 {% block other_js %}
 	<script>
         $(function () {
