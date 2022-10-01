@@ -12,11 +12,15 @@ class WikiModelForm(forms.ModelForm, BootstrapForm):
         forms.ModelForm.__init__(self, *args, **kwargs)
 
         if method == 'get':
+            query_set = models.Wiki.objects.filter(project=project)
+
             if self.instance.id:
-                choices = models.Wiki.objects.filter(project=project). \
-                    exclude(id=self.instance.id).values_list('id', 'title')
+                choices = [('', '---------')]
+                choices.extend(list(query_set.exclude(id=self.instance.id).values_list('id', 'title')))
             else:
-                choices = models.Wiki.objects.filter(project=project).values_list('id', 'title')
+                choices = [('', '---------')]
+                choices.extend(list(query_set.values_list('id', 'title')))
+
             self.fields['parent'].choices = choices
         elif method == 'post':
             self.instance.project = project
