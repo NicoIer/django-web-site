@@ -25,8 +25,9 @@ class RegisterModelForm(BootstrapForm, forms.ModelForm):
         fields = ('username', 'password', 'confirm_password', 'email', 'code')
 
     def __init__(self, *args, **kwargs):
-        super(RegisterModelForm, self).__init__(*args, **kwargs)
+        forms.ModelForm.__init__(self, *args, **kwargs)
         self.user = None
+        BootstrapForm.__init__(self, *args, **kwargs)
 
     def clean_username(self):
         username = self.cleaned_data['username']

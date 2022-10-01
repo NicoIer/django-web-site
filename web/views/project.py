@@ -28,7 +28,7 @@ def project_home(request):
         # check logging后 tracer必定是User
         user = request.tracer.user
         form = ProjectModelForm()
-        return render(request, r'web\project_home.html', locals())
+        return render(request, 'web/project_home.html', locals())
     elif request.method == 'POST':
         form = ProjectModelForm(tracer=request.tracer, data=request.POST)
         return check_form(form, request)
