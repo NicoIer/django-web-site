@@ -1,3 +1,4 @@
+import markdown
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -18,7 +19,6 @@ def home(request, project_id: int):
 
         if wiki_id and wiki_id.isdecimal():
             wiki = models.Wiki.objects.get(id=wiki_id)
-
         return render(request, 'web/wiki.html', locals())
     else:
         return redirect('project_list')
