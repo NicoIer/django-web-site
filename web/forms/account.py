@@ -126,6 +126,7 @@ class LoginForm(BootstrapForm, forms.Form):
                 raise ValidationError('用户名不存在')
 
 
+# ToDo 网易邮箱gg了 需要重新弄
 class EmailForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(EmailForm, self).__init__(*args, **kwargs)

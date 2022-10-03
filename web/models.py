@@ -7,8 +7,8 @@ class Wiki(models.Model):
     project = models.ForeignKey(verbose_name='项目', to='Project', on_delete=models.CASCADE)
     title = models.CharField(verbose_name='标题', max_length=32)
     content = models.TextField(verbose_name='内容')
-
-    parent = models.ForeignKey(verbose_name='夫文章', on_delete=models.CASCADE, to='Wiki', related_name='parentWiki',
+    # 反向查询时用的name 就是 related_name
+    parent = models.ForeignKey(verbose_name='夫文章', on_delete=models.CASCADE, to='Wiki', related_name='child',
                                default=None, null=True, blank=True)
     level = models.IntegerField('级别', default=1)
 
@@ -33,7 +33,7 @@ class Project(models.Model):
     color = models.SmallIntegerField(verbose_name='颜色', choices=COLOR_CHOICE, default=1)
     desc = models.CharField(verbose_name='项目描述', max_length=255, null=True, blank=True)
     star = models.BooleanField(verbose_name='星标', default=False)
-    
+
     bucket = models.CharField(verbose_name='minIO对象存储桶', max_length=128, default="")
     region = models.CharField(verbose_name='minIO对象存储区域', max_length=32, default="")
 
@@ -102,3 +102,24 @@ class Transaction(models.Model):
     end_datetime = models.DateTimeField(verbose_name='结束时间', null=True, blank=True)
 
     create_datetime = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
+
+
+class FileRepository(models.Model):
+    project = models.ForeignKey(verbose_name='项目', to='Project', on_delete=models.CASCADE)
+    file_type_choices = (
+        (1, '文件'),
+        (2, '文件夹'),
+    )
+    file_type = models.SmallIntegerField(verbose_name='类型', choices=file_type_choices)
+    name = models.CharField(verbose_name='名称', max_length=32, help_text='文件/文件夹 名称')
+    # minio 对应文件对象的key
+    key = models.CharField(verbose_name='minio_key', max_length=128, null=True, blank=True)
+
+    file_size = models.IntegerField(verbose_name='文件大小', null=True, blank=True)
+    file_path = models.CharField(verbose_name='文件路径', max_length=255, null=True, blank=True)
+
+    parent = models.ForeignKey(verbose_name='父级目录', to='FileRepository', related_name='child',
+                               on_delete=models.CASCADE, null=True, blank=True)
+    update_user = models.ForeignKey(verbose_name='最近更新者', to='User', null=True, blank=True,
+                                    on_delete=models.SET_NULL)
+    update_datetime = models.DateTimeField(verbose_name='更新时间', auto_now=True)

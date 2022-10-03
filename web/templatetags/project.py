@@ -32,7 +32,7 @@ def manage_nav_bar(request, project):
     """
     # ToDo 优化这里的渲染逻辑 不要耦合
     titles = ('Project:({})'.format(project.name), '问题', '统计', 'wiki', '文件', '配置')
-    urls = ('dashboard', 'issues', 'statistics', 'wiki', 'file', 'settings')
+    urls = ('dashboard', 'issues', 'statistics', 'wiki', 'file_home', 'settings')
 
     data = []
     for title, url in zip(titles, urls):

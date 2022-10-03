@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bootstrap3',
     'web.apps.WebConfig',
+    # 'learn_test.apps.LearnTestConfig',
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

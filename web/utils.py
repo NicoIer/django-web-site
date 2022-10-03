@@ -67,12 +67,13 @@ class MinIoManager:
                             region=region,
                             )
 
-    def create_bucket(self, bucket_name: str, location: str = None) -> bool:
+    def create_bucket(self, bucket_name: str, location: str = None, policy: dict = None) -> bool:
         try:
             self.client.make_bucket(bucket_name, location)
         except minio.error.S3Error:
             return False
-
+        if policy:
+            pass
         return True
 
     def upload_iostream(self, bucket_name, obj_name, data, length) -> bool:

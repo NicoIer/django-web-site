@@ -33,6 +33,6 @@ class WikiModelForm(forms.ModelForm, BootstrapForm):
         exclude = ['project', 'level']
 
     def save(self, commit=True):
-        if self.instance.parent and self.instance.parent != self.instance:
-            self.instance.level = self.instance.parent.level + 1
+        if self.instance.parent_id and self.instance.parent_id != self.instance:
+            self.instance.level = self.instance.parent_id.level + 1
         super(forms.ModelForm, self).save()

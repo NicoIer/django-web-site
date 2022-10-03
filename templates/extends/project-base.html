@@ -8,8 +8,10 @@
 	<meta name="viewport" content="width=device-width,initial-scale=1">
 	{% bootstrap_css %}
 	{% bootstrap_javascript %}
+
 	{% block markdown_link %}
 	{% endblock markdown_link %}
+
 	{% block fontawesome_link %}
 		<link rel="stylesheet" href="{% static 'font-awesome/css/fontawesome.min.css' %}">
 		<script src="{% static 'font-awesome/js/fontawesome.min.js' %}"></script>
@@ -76,9 +78,11 @@
 {% endblock head %}
 {% block content %}
 {% endblock content %}
+
 {% block base_js %}
 	<script type="text/javascript" src="{% static 'web/js/util.js' %}"></script>
 {% endblock base_js %}
+
 {% block js %}
 {% endblock js %}
 

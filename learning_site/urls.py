@@ -24,4 +24,5 @@ urlpatterns = [
     # path('',include('web.urls')),
     # path('app01/', include('app01.urls')),
     path('web/', include('web.urls')),
+    path('test/', include('learn_test.urls'))
 ]
