@@ -36,22 +36,35 @@
 	<div class="container-fluid">
 		<div class="panel panel-default">
 			<!-- Default panel contents -->
-			<div class="panel-heading">{{ project.name }}
+			<div class="panel-heading flex-column">
+				<div>
+					<a href="{% url 'file_home' project_id %}">
+						<span class="glyphicon glyphicon-home"></span>
+						{{ project.name }}
+					</a>
+					{% for path in dir_path %}
+						<a href="{% url 'file_home' project_id %}?folder_id={{ path.id }}">
+							<span class="glyphicon glyphicon-chevron-right"></span>
+							{{ path.name }}
+						</a>
+					{% endfor %}
+				</div>
 				<div class="right_function_div">
 					<a type="button" class="btn btn-success btn-xs"
-					   data-toggle="modal" data-target="#addModal"
+					   data-toggle="modal" data-target="#modal"
 					   data-whatever="新建"
 					>
 						<span class="glyphicon glyphicon-plus" aria-hidden="true">新建</span>
 					</a>
+
 					<a type="button" class="btn btn-primary btn-xs"
-					   data-toggle="modal" data-target="#addModal"
+					   data-toggle="modal" data-target="#modal"
 					   data-whatever="编辑"
 					>
 						<span class="glyphicon glyphicon-pencil" aria-hidden="true">编辑</span>
 					</a>
 					<a type="button" class="btn btn-danger btn-xs"
-					   data-toggle="modal" data-target="#addModal"
+					   data-toggle="modal" data-target="#modal"
 					   data-whatever="删除"
 					>
 						<span class="glyphicon glyphicon-trash" aria-hidden="true">删除</span>
@@ -91,8 +104,22 @@
 						<td>{{ file.update_user }}</td>
 						<td>{{ file.update_datetime }}</td>
 						<td>
-							<a href="#">编辑</a>
-							<a href="#">删除</a>
+							{% if file.file_type == 2 %}
+								<a type="button" class="btn btn-default btn-xs"
+								   data-toggle="modal" data-target="#modal"
+								   data-whatever="编辑文件夹" data-name="{{ file.name }}"
+								   data-fid="{{ file.id }}"
+								>
+									<span class="glyphicon glyphicon-pencil"></span>
+								</a>
+							{% endif %}
+							<a type="button" class="btn btn-danger btn-xs"
+							   data-toggle="modal" data-target="#deleteModal"
+							   data-whatever="删除" data-name="{{ file.name }}"
+							   data-fid="{{ file.id }}"
+							>
+								<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+							</a>
 						</td>
 					</tr>
 				{% endfor %}
@@ -101,9 +128,25 @@
 		</div>
 
 	</div>
+	<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="alert alert-danger alert-dismissible fade in" role="alert">
+				<h4>真的要删除么??</h4>
+				<p>
+					文件夹下的所有文件都会被删除
+				</p>
+				<p>
+					<button id="btnDelete" type="button" class="btn btn-danger" onclick="deleteFile()">确定</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal" aria-label="Close">
+						取消
+					</button>
+				</p>
+			</div>
+		</div>
+	</div>
 
-	<!-- Modal -->
-	<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+
+	<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -114,10 +157,12 @@
 				<div class="modal-body">
 					<form class="file-form" id="file-form" novalidate>
 						{% csrf_token %}
+						<label for="fid"></label>
+						<input hidden type="text" name="fid" id="fid">
 						{% for field in form %}
 							<div class="form-group">
-
-								<label for="{{ field.id_for_label }}">{{ field.label }}</label>
+								<label for="{{ field.id_for_label }}"
+								       id="{{ field.id_for_label }}">{{ field.label }}</label>
 								{{ field }}
 							</div>
 						{% endfor %}
@@ -141,16 +186,51 @@
 
         function initAddModal() {
             // 绑定了 bs show 时间
-            $('#addModal').on('show.bs.modal', function (event) {
+            $('#modal').on('show.bs.modal', function (event) {
                 const button = $(event.relatedTarget); // Button that triggered the modal
                 const recipient = button.data('whatever'); // Extract info from data-* attributes
                 // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
                 // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-                const modal = $(this);
-                modal.find('.modal-title').text(recipient)
-                document.getElementById('file-form').reset()
-                {#modal.find('.modal-body input').val(recipient)#}
+                const modal = $(this);//触发这个函数的对象
+                modal.find('.modal-title').text(recipient);
+                //
+                const fid = button.data('fid');
+                const name = button.data('name');
+                // 编辑时
+                if (fid) {
+                    // modal.find('id_name').text(name);
+                    console.log(fid)
+                    modal.find('#fid').val(fid)
+                    console.log(modal.find('#fid'))
+                } else {
+                    // 新建时
+                    document.getElementById('file-form').reset();
+                }
+            });
+            $('#deleteModal').on('show.bs.modal', function (event) {
+                const button = $(event.relatedTarget); // Button that triggered the modal
+                const modal = $(this);//触发这个函数的对象
+                //
+                const fid = button.data('fid');
+                modal.find('#btnDelete').attr('fid', fid);
             })
+        }
+
+        function deleteFile() {
+            // 获取要删除的id
+            const fid = $('#btnDelete').attr('fid');
+            console.log(fid);
+            $.ajax({
+                url: '{% url 'file_delete' project_id %}',
+                method: 'get',
+                data: {'fid': fid},
+                success: function (res) {
+                    console.log(res);
+                    if (res.status) {
+                        location.reload()
+                    }
+                }
+            });
         }
 
         function onSubmitBtnClicked() {
@@ -176,7 +256,7 @@
                         })
                     }
                 }
-            })
+            });
         }
 	</script>
 {% endblock js %}

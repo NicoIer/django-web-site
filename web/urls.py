@@ -28,6 +28,7 @@ urlpatterns = [
     re_path(r'^manage/(?P<project_id>\d+)/', include(manage_urls)),
     # 文件上传
     re_path(r'file/(?P<project_id>\d+)/', file.file_home, name='file_home'),
+    re_path(r'file_delete/(?P<project_id>\d+)/', file.file_delete, name='file_delete'),
     # 测试内容
     path('test/', test.test, name='test'),
     # 获取数据 127.0.0.1：8000/web/get_data
