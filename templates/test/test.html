@@ -1,0 +1,72 @@
+{% load bootstrap3 %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Title</title>
+	{% bootstrap_css %}
+	{% bootstrap_javascript %}
+</head>
+<body>
+<input type="file" id="selector" multiple>
+<button onclick="upload()">Upload</button>
+<button onclick="test_btn()">test</button>
+<div id="status">No uploads</div>
+
+<script type="text/javascript">
+    // `upload` iterates through all files selected and invokes a helper function called `retrieveNewURL`.
+    function upload() {
+        // Get selected files from the input element.
+        var files = document.querySelector("#selector").files;
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            // 从服务器获取一个URL
+            retrieveNewURL(file, (file, url) => {
+                // 上传文件到服务器
+                uploadFile(file, url);
+            });
+        }
+    }
+
+    // express是一个小巧的Http server封装，不过这对任何HTTP server都管用。
+    // 发请求到Node.js server获取上传URL。
+    // `retrieveNewURL` accepts the name of the current file and invokes the `/presignedUrl` endpoint to
+    // generate a pre-signed URL for use in uploading that file:
+    function retrieveNewURL(file, cb) {
+        fetch('/test/presignedUrl?name=${file.name}').then((response) => {
+            response.text().then((url) => {
+                cb(file, url);
+            });
+        }).catch((e) => {
+            console.error(e);
+        });
+    }
+
+    // 使用Fetch API来上传文件到S3。
+    // ``uploadFile` accepts the current filename and the pre-signed URL. It then uses `Fetch API`
+    // to upload this file to S3 at `play.min.io:9000` using the URL:
+    function uploadFile(file, url) {
+        if (document.querySelector('#status').innerText === 'No uploads') {
+            document.querySelector('#status').innerHTML = '';
+        }
+        fetch(url, {
+            method: 'PUT',
+            body: file
+        }).then(() => {
+            // If multiple files are uploaded, append upload status on the next line.
+            document.querySelector('#status').innerHTML += `<br>Uploaded ${file.name}.`;
+        }).catch((e) => {
+            console.log('uploadFile error')
+            console.error(e);
+        });
+    }
+</script>
+<script>
+    function test_btn() {
+        $.get('/test/get_template_url?file_name=123&project_id=2', {}, function (data) {
+            console.log(data)
+        })
+    }
+</script>
+</body>
+</html>
