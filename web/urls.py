@@ -1,13 +1,12 @@
 from django.urls import path, re_path, include
 
-from web.views import account, project, manage, wiki
+from web.views import account, project, manage, wiki, file
 from web.views import test
 
 manage_urls = [
     path('dashboard/', manage.dashboard, name='dashboard'),
     path('issues/', manage.dashboard, name='issues'),
     path('statistics/', manage.dashboard, name='statistics'),
-    path('file/', manage.dashboard, name='file'),
     path('wiki/', wiki.home, name='wiki'),
     path('wiki/add', wiki.add, name='wiki_add'),
     re_path(r'wiki/delete/(?P<wiki_id>\d+)', wiki.delete, name='wiki_delete'),
@@ -28,6 +27,7 @@ urlpatterns = [
     #
     re_path(r'^manage/(?P<project_id>\d+)/', include(manage_urls)),
     # 文件上传
+    re_path(r'file/(?P<project_id>\d+)/', file.file_home, name='file_home'),
     # 测试内容
     path('test/', test.test, name='test'),
     # 获取数据 127.0.0.1：8000/web/get_data
