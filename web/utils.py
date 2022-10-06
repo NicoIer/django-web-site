@@ -2,6 +2,8 @@ import datetime
 import time
 from datetime import timedelta
 import minio.error
+from minio.deleteobjects import DeleteObject
+from minio.error import InvalidResponseError
 from django.http import HttpResponse, HttpRequest, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
 from minio import Minio
@@ -84,7 +86,29 @@ class MinIoManager:
 
         return True
 
-    def get_obj_get_url(self, bucket_name, obj_name, delta=timedelta(days=2)):
+    def delete_obj(self, bucket_name, obj_name):
+        try:
+            self.client.remove_object(bucket_name, obj_name)
+        except InvalidResponseError:
+            raise
+
+    def delete_objs(self, bucket_name, obj_name_list):
+        try:
+            obj_name_list = list(map(lambda x: DeleteObject(x), obj_name_list))
+            errors = self.client.remove_objects(bucket_name, obj_name_list)
+            for error in errors:
+                print("Deletion Error: {}".format(error))
+        except InvalidResponseError:
+            raise
+
+    def get_obj_put_url(self, bucket_name, obj_name, delta=timedelta(days=2)) -> str:
+        try:
+            url = self.client.presigned_put_object(bucket_name, obj_name, delta)
+        except Exception:
+            raise
+        return url
+
+    def get_obj_get_url(self, bucket_name, obj_name, delta=timedelta(days=2)) -> str:
         try:
             url = self.client.presigned_get_object(bucket_name, obj_name, delta)
         except Exception:

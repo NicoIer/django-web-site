@@ -19,7 +19,26 @@
 
         .right_function_div {
             display: inline;
-            float: right;
+        }
+	</style>
+	{#	<link href=" {% static 'bootstrap-fileinput/css/fileinput.css' %}" type="text/css" rel="stylesheet"/>#}
+	{#	<script src="{% static 'bootstrap-fileinput/js/fileinput.min.js' %}"></script>#}
+	{#	<script src="{% static 'bootstrap-fileinput/js/locales/zh.js' %}"></script>#}
+
+	<style>
+
+        .upload_file {
+            position: relative;
+            display: inline-block;
+		{#超过的部分隐藏#} overflow: hidden;
+        }
+
+        .upload_file input {
+            position: absolute;
+            font-size: 100px;
+            right: 0;
+            top: 0;
+            opacity: 0;
         }
 	</style>
 {% endblock css %}
@@ -54,21 +73,13 @@
 					   data-toggle="modal" data-target="#modal"
 					   data-whatever="新建"
 					>
-						<span class="glyphicon glyphicon-plus" aria-hidden="true">新建</span>
+						<span class="glyphicon glyphicon-plus" aria-hidden="true">新建文件夹</span>
 					</a>
-
-					<a type="button" class="btn btn-primary btn-xs"
-					   data-toggle="modal" data-target="#modal"
-					   data-whatever="编辑"
-					>
-						<span class="glyphicon glyphicon-pencil" aria-hidden="true">编辑</span>
-					</a>
-					<a type="button" class="btn btn-danger btn-xs"
-					   data-toggle="modal" data-target="#modal"
-					   data-whatever="删除"
-					>
-						<span class="glyphicon glyphicon-trash" aria-hidden="true">删除</span>
-					</a>
+					<div class="btn btn-info btn-xs upload_file">
+						<span class="glyphicon glyphicon-open" aria-hidden="true">upload</span>
+						<input class="btn btn-info btn-xs" type="file" multiple
+						       name="upload_file" id="upload_file" onchange="uploadChange()">
+					</div>
 				</div>
 			</div>
 
@@ -131,7 +142,7 @@
 	<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 		<div class="modal-dialog" role="document">
 			<div class="alert alert-danger alert-dismissible fade in" role="alert">
-				<h4>真的要删除么??</h4>
+				<h4>真的要删除么??!!(唔唔)</h4>
 				<p>
 					文件夹下的所有文件都会被删除
 				</p>
@@ -180,9 +191,37 @@
 {% block js %}
 	<script type="text/javascript" src="{% static 'web/js/util.js' %}"></script>
 	<script>
+        const bucket = '{{ project.bucket }}'
         $(function () {
             initAddModal();
         })
+
+        function uploadChange() {
+            // 向后台获取一个上传文件的url
+            const input_ = $('#upload_file')[0];
+            const files = input_.files;
+            $.each(files, function (idx, file) {
+                // 通过 file_name 和 project_id 向后台获取 post链接
+                console.log(file.name);
+                console.log(bucket);
+                $.ajax({
+                    url: '{% url 'get_upload_url'%}',
+                    method: 'post',
+                    data: {'bucket': bucket, 'file_name': file.name},
+                    success: function (res) {
+                        if (res.status) {
+                            console.log(res.url)
+                            fetch(res.url, {
+                                method: 'PUT',
+                                body: file
+                            })
+                        } else {
+                            console.log('失败')
+                        }
+                    }
+                })
+            });
+        }
 
         function initAddModal() {
             // 绑定了 bs show 时间
