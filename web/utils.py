@@ -1,4 +1,5 @@
 import datetime
+import json
 import time
 from datetime import timedelta
 import minio.error
@@ -77,6 +78,27 @@ class MinIoManager:
         if policy:
             pass
         return True
+
+    def set_bucket_public_read(self, bucket_name):
+        # ToDo 有点丑  想办法修改一下
+        policy_json = {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Sid": "PublicRead",
+                    "Effect": "Allow",
+                    "Principal": "*",
+                    "Action": [
+                        "s3:GetObject",
+                        "s3:GetObjectVersion"
+                    ],
+                    "Resource": [
+                        f"arn:aws:s3:::{bucket_name}/*"
+                    ]
+                }
+            ]
+        }
+        self.client.set_bucket_policy(bucket_name, json.dumps(policy_json))
 
     def upload_iostream(self, bucket_name, obj_name, data, length) -> bool:
         try:
