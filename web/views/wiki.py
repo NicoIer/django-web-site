@@ -9,6 +9,7 @@ from web.forms.wiki import WikiModelForm
 from web.utils import check_login
 from django.views.decorators.csrf import csrf_exempt
 from web.views import util
+from web.utils import minio_manager
 
 
 @check_login
@@ -80,9 +81,6 @@ def edit(request, project_id, wiki_id):
     return render(request, 'web/wiki_edit.html', locals())
 
 
-from web.utils import minio_manager
-
-
 @xframe_options_sameorigin
 @csrf_exempt
 def wiki_upload(request, project_id):
@@ -101,7 +99,7 @@ def wiki_upload(request, project_id):
     try:
         # 上传文件
         minio_manager.upload_iostream(project.bucket, file_name, image.file, image.size)
-        # 获取文件url
+        # 获取文件url Todo 在这里修改为 路径访问 将桶设置为public read
         data['url'] = minio_manager.get_obj_get_url(project.bucket, file_name)
         # 返回的数据
         data['success'] = 1

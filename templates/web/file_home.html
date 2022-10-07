@@ -155,8 +155,6 @@
 			</div>
 		</div>
 	</div>
-
-
 	<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
@@ -192,6 +190,7 @@
 	<script type="text/javascript" src="{% static 'web/js/util.js' %}"></script>
 	<script>
         const bucket = '{{ project.bucket }}'
+        const folder_id = '{{ parent_obj.id }}'
         $(function () {
             initAddModal();
         })
@@ -201,22 +200,47 @@
             const input_ = $('#upload_file')[0];
             const files = input_.files;
             $.each(files, function (idx, file) {
-                // 通过 file_name 和 project_id 向后台获取 post链接
-                console.log(file.name);
-                console.log(bucket);
+                // 通过 file_name 和 project_id 向后台获取 put 链接
                 $.ajax({
-                    url: '{% url 'get_upload_url'%}',
+                    url: '{% url 'get_upload_url' %}',
                     method: 'post',
                     data: {'bucket': bucket, 'file_name': file.name},
                     success: function (res) {
                         if (res.status) {
-                            console.log(res.url)
+                            console.log('获取url成功' + res.url);
+                            // 向minio 发送文件
                             fetch(res.url, {
                                 method: 'PUT',
                                 body: file
+                            }).then(function (response) {
+                                if (!response.ok) {//上传失败 应该要告诉服务端 告诉前端
+                                    console.log('fetch失败');
+                                    throw Error(response.statusText);
+                                } else {
+                                    console.log('fetch成功');
+                                    $.ajax({
+                                        url: '{% url 'upload_success' project_id%}',
+                                        method: 'post',
+                                        data: {
+                                            'file_name': file.name,
+                                            'file_size': file.size,
+                                            'folder_id': folder_id,
+
+                                        },
+                                        success: function (res) {
+                                            if (res.status) {
+                                                console.log('成功辣')
+                                                location.reload()
+                                            } else {
+                                                location.reload()
+                                            }
+                                        }
+                                    })
+                                    return response;
+                                }
                             })
                         } else {
-                            console.log('失败')
+                            console.log('获取url失败')
                         }
                     }
                 })

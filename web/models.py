@@ -111,7 +111,7 @@ class FileRepository(models.Model):
         (2, '文件夹'),
     )
     file_type = models.SmallIntegerField(verbose_name='类型', choices=file_type_choices)
-    name = models.CharField(verbose_name='名称', max_length=32, help_text='文件/文件夹 名称')
+    name = models.CharField(verbose_name='名称', max_length=128, help_text='文件/文件夹 名称')
     # minio 对应文件对象的key
     key = models.CharField(verbose_name='minio_key', max_length=128, null=True, blank=True)
 

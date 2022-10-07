@@ -10,6 +10,7 @@ from web import models
 from web.forms.file import FileFoldModelForm
 from web.models import FileRepository
 from web.utils import check_login, minio_manager
+from web.views.util import uid
 
 
 @check_login
@@ -82,16 +83,39 @@ def file_delete(request, project_id):
 
 @csrf_exempt
 @check_login
+def upload_success(request, project_id):
+    try:
+        project = models.Project.objects.get(id=project_id)
+    except Exception:
+        return render(request, 'index.html')
+    # 文件上传成功的确认标识
+    if request.method == 'POST':
+        file_name = request.POST.get("file_name", "")
+        file_size = request.POST.get("file_size", "")
+        folder_id = request.POST.get('folder_id', "")
+        if file_name:
+            file_key = uid(file_name)
+            _ = FileRepository(name=file_name, file_size=file_size,
+                               file_type=1, project=project, key=file_key,
+                               parent_id=folder_id,
+                               update_user=request.tracer.user,
+                               )
+            _.save()
+            return JsonResponse({'status': True})
+        else:
+            return JsonResponse({'status': False})
+
+
+@csrf_exempt
+@check_login
 def get_upload_url(request):
     # ToDo 比较愚蠢的临时凭证方案 优化他(STS的临时授权)
-    # ToDo 将file记录存储到MySQL
     if request.method == 'POST':
+        # POST 请求 返回 url
         bucket = request.POST.get('bucket', "")
         file_name = request.POST.get('file_name', "")
         if bucket and file_name:
-            url = minio_manager.get_obj_put_url(request.POST.get('bucket'), request.POST.get('file_name'))
-            # 这里还要构造文件model 存储到数据库
-            FileRepository()
+            url = minio_manager.get_obj_put_url(request.POST.get('bucket'), uid(request.POST.get('file_name')))
             return JsonResponse({'status': True, 'url': url})
         else:
             return JsonResponse({'status': False})
@@ -107,7 +131,7 @@ def get_files(folder: FileRepository):
         child_files = childes.filter(file_type=1)
         child_folders = childes.filter(file_type=2)
         for child_folder in child_folders:
-            print('{}的子文件夹{}'.format(folder.name, child_folder.name))
+            # print('{}的子文件夹{}'.format(folder.name, child_folder.name))
             folder_queue.append(child_folder)
         for file in child_files:
             files.append(file.key)
