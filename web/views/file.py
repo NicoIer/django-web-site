@@ -72,7 +72,7 @@ def file_delete(request, project_id):
             # 由于不设置最大存储容量....所以不用管 size的事情
             minio_manager.delete_obj(project.bucket, file.key)
         elif file.file_type == 2:  # 此时是Folder
-            keys = get_files(file)
+            keys = get_all_files(file)
             minio_manager.delete_objs(project.bucket, keys)
         # 从数据库记录中删除
         file.delete()
@@ -114,14 +114,24 @@ def get_upload_url(request):
         # POST 请求 返回 url
         bucket = request.POST.get('bucket', "")
         file_name = request.POST.get('file_name', "")
-        if bucket and file_name:
+        folder_id = request.POST.get('folder_id')
+        # 检查文件夹下是否有重名文件
+        folder_id = folder_id if folder_id else None
+        folder_files = get_cur_folder_files(folder_id)
+
+        if bucket and file_name and not folder_files.filter(name=file_name).exists():
+            # 检查这个文件名是否合法
             url = minio_manager.get_obj_put_url(request.POST.get('bucket'), uid(request.POST.get('file_name')))
             return JsonResponse({'status': True, 'url': url})
         else:
             return JsonResponse({'status': False})
 
 
-def get_files(folder: FileRepository):
+def get_cur_folder_files(folder_id: FileRepository):
+    return FileRepository.objects.filter(parent_id=folder_id, file_type=1)
+
+
+def get_all_files(folder: FileRepository):
     folder_queue = deque()
     folder_queue.append(folder)
     files = []

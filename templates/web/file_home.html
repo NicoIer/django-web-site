@@ -40,6 +40,18 @@
             top: 0;
             opacity: 0;
         }
+
+        .upload-progress {
+            padding: 0;
+            min-width: 200px;
+            position: fixed;
+            right: 2px;
+            bottom: 2px;
+        }
+
+        .progress-error {
+            color: red;
+        }
 	</style>
 {% endblock css %}
 
@@ -108,6 +120,7 @@
 							{% endif %}
 						</td>
 						{% if file.file_type == 1 %}
+							{#							文件删除#}
 							<td>{{ file.file_size }}</td>
 						{% else %}
 							<td>-</td>
@@ -138,6 +151,39 @@
 			</table>
 		</div>
 
+	</div>
+
+	<div id="upload-progress" class="upload-progress hide">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<span class="glyphicon glyphicon-upload" aria-hidden="true">
+					上传进度
+				</span>
+			</div>
+			{#			ToDo 进度条的显示方式好丑#}
+			<table class="table">
+				<tbody id="progress_list">
+
+				</tbody>
+			</table>
+		</div>
+	</div>
+	{#	ToDo 这里是假进度条#}
+	<div class="hide">
+		<table id="progress_template">
+			<tr>
+				<td>
+					<div class="name"></div>
+					<div class="progress">
+						<div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0"
+						     aria-valuemax="100" style="width: 0;">
+							<span class="sr-only">0%</span>
+						</div>
+					</div>
+					<div class="progress-error"></div>
+				</td>
+			</tr>
+		</table>
 	</div>
 	<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 		<div class="modal-dialog" role="document">
@@ -199,12 +245,17 @@
             // 向后台获取一个上传文件的url
             const input_ = $('#upload_file')[0];
             const files = input_.files;
+            const upload_progress = $('#upload-progress')
+            upload_progress.removeClass('hide');
             $.each(files, function (idx, file) {
                 // 通过 file_name 和 project_id 向后台获取 put 链接
+                const tr_label = $('#progress_template').find('tr').clone();
+                tr_label.find('.name').text(file.name);
+                $('#progress_list').append(tr_label);
                 $.ajax({
                     url: '{% url 'get_upload_url' %}',
                     method: 'post',
-                    data: {'bucket': bucket, 'file_name': file.name},
+                    data: {'bucket': bucket, 'file_name': file.name, 'folder_id': folder_id},
                     success: function (res) {
                         if (res.status) {
                             console.log('获取url成功' + res.url);
@@ -212,37 +263,37 @@
                             fetch(res.url, {
                                 method: 'PUT',
                                 body: file
-                            }).then(function (response) {
-                                if (!response.ok) {//上传失败 应该要告诉服务端 告诉前端
-                                    console.log('fetch失败');
-                                    throw Error(response.statusText);
-                                } else {
-                                    console.log('fetch成功');
-                                    $.ajax({
-                                        url: '{% url 'upload_success' project_id%}',
-                                        method: 'post',
-                                        data: {
-                                            'file_name': file.name,
-                                            'file_size': file.size,
-                                            'folder_id': folder_id,
-
-                                        },
-                                        success: function (res) {
-                                            if (res.status) {
-                                                console.log('成功辣')
-                                                location.reload()
-                                            } else {
-                                                location.reload()
-                                            }
+                            }).then(response => {
+                                console.log('fetch成功');
+                                $.ajax({
+                                    url: '{% url 'upload_success' project_id%}',
+                                    method: 'post',
+                                    data: {
+                                        'file_name': file.name,
+                                        'file_size': file.size,
+                                        'folder_id': folder_id,
+                                    },
+                                    success: function (res) {
+                                        if (res.status) {
+                                            tr_label.find('.progress-bar').text('100%');
+                                            tr_label.find('.progress-bar').css('width', '100%');
+                                        } else {
+                                            tr_label.find('.progress-error').text('上传失败')
                                         }
-                                    })
-                                    return response;
-                                }
+                                    },
+                                })
+                                return response;
+                            }).catch(ex => {
+                                console.log('fetch失败');
+                                tr_label.find('.progress-error').text('上传失败')
                             })
                         } else {
                             console.log('获取url失败')
+                            tr_label.find('.progress-error').text('上传失败')
+                            location.reload()
                         }
-                    }
+                    },
+
                 })
             });
         }

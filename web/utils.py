@@ -114,6 +114,10 @@ class MinIoManager:
         except InvalidResponseError:
             raise
 
+    async def async_delete_obj(self, bucket_name, obj_name):
+        # ToDo 实现异步删除
+        raise NotImplementedError
+
     def delete_objs(self, bucket_name, obj_name_list):
         try:
             obj_name_list = list(map(lambda x: DeleteObject(x), obj_name_list))
