@@ -255,7 +255,11 @@
                 $.ajax({
                     url: '{% url 'get_upload_url' %}',
                     method: 'post',
-                    data: {'bucket': bucket, 'file_name': file.name, 'folder_id': folder_id},
+                    data: {
+                        'bucket': bucket,
+                        'file_name': file.name,
+                        'folder_id': folder_id
+                    },
                     success: function (res) {
                         if (res.status) {
                             console.log('获取url成功' + res.url);
@@ -277,6 +281,7 @@
                                         if (res.status) {
                                             tr_label.find('.progress-bar').text('100%');
                                             tr_label.find('.progress-bar').css('width', '100%');
+                                            location.reload()
                                         } else {
                                             tr_label.find('.progress-error').text('上传失败')
                                         }
@@ -290,7 +295,6 @@
                         } else {
                             console.log('获取url失败')
                             tr_label.find('.progress-error').text('上传失败')
-                            location.reload()
                         }
                     },
 

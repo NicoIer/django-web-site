@@ -1,9 +1,8 @@
 import hashlib
-
-from django.http import HttpResponse
-import uuid
 from web.models import User
 from django.conf import settings
+from django.http import HttpResponse
+import uuid
 
 
 def login_cookie_session(request, response, user: User, max_age: int = 3600 * 24):

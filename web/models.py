@@ -114,6 +114,7 @@ class FileRepository(models.Model):
     name = models.CharField(verbose_name='名称', max_length=128, help_text='文件/文件夹 名称')
     # minio 对应文件对象的key
     key = models.CharField(verbose_name='minio_key', max_length=128, null=True, blank=True)
+    etag = models.CharField(verbose_name='ETag', max_length=128, default='')
 
     file_size = models.IntegerField(verbose_name='文件大小', null=True, blank=True)
     file_path = models.CharField(verbose_name='文件路径', max_length=255, null=True, blank=True)

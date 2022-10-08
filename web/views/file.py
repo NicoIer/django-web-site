@@ -10,7 +10,7 @@ from web import models
 from web.forms.file import FileFoldModelForm
 from web.models import FileRepository
 from web.utils import check_login, minio_manager
-from web.views.util import uid
+from web.views.util import uid, md5
 
 
 @check_login
@@ -88,13 +88,13 @@ def upload_success(request, project_id):
         project = models.Project.objects.get(id=project_id)
     except Exception:
         return render(request, 'index.html')
-    # 文件上传成功的确认标识
+    # 文件上传成功的确认
     if request.method == 'POST':
         file_name = request.POST.get("file_name", "")
         file_size = request.POST.get("file_size", "")
         folder_id = request.POST.get('folder_id', "")
         if file_name:
-            file_key = uid(file_name)
+            file_key = md5(file_name)
             _ = FileRepository(name=file_name, file_size=file_size,
                                file_type=1, project=project, key=file_key,
                                parent_id=folder_id,
@@ -109,11 +109,10 @@ def upload_success(request, project_id):
 @csrf_exempt
 @check_login
 def get_upload_url(request):
-    # ToDo 比较愚蠢的临时凭证方案 优化他(STS的临时授权)
     if request.method == 'POST':
         # POST 请求 返回 url
-        bucket = request.POST.get('bucket', "")
-        file_name = request.POST.get('file_name', "")
+        bucket = request.POST.get('bucket')
+        file_name = request.POST.get('file_name')
         folder_id = request.POST.get('folder_id')
         # 检查文件夹下是否有重名文件
         folder_id = folder_id if folder_id else None
@@ -121,7 +120,7 @@ def get_upload_url(request):
 
         if bucket and file_name and not folder_files.filter(name=file_name).exists():
             # 检查这个文件名是否合法
-            url = minio_manager.get_obj_put_url(request.POST.get('bucket'), uid(request.POST.get('file_name')))
+            url = minio_manager.get_obj_put_url(request.POST.get('bucket'), md5(request.POST.get('file_name')))
             return JsonResponse({'status': True, 'url': url})
         else:
             return JsonResponse({'status': False})
