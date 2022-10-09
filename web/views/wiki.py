@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -93,14 +94,15 @@ def wiki_upload(request, project_id):
     image = request.FILES.get('editormd-image-file')
     project = models.Project.objects.get(id=project_id)
     # image.file
-    file_name = util.uid('{}.{}'.format("", image.name.rsplit('.'[-1])))
+    file_name = '{}.{}'.format(util.uid(image.name), image.name.rsplit('.')[-1])
     # response data
     data = {'success': 0, 'message': None, 'url': None}
     try:
         # 上传文件
         minio_manager.upload_iostream(project.bucket, file_name, image.file, image.size)
-        # 获取文件url Todo 在这里修改为 路径访问 将桶设置为public read
-        data['url'] = minio_manager.get_obj_get_url(project.bucket, file_name)
+        # 获取文件url
+        # _ = minio_manager.get_obj_get_url(project.bucket, file_name)
+        data['url'] = f'http://{settings.MINIO_HOST}:{settings.MINIO_PORT}/{project.bucket}/{file_name}'
         # 返回的数据
         data['success'] = 1
     except Exception:
