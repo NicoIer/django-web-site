@@ -1,15 +1,13 @@
 from django.conf import settings
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.views.decorators.clickjacking import xframe_options_exempt
-from django.views.decorators.clickjacking import xframe_options_deny
 from django.views.decorators.clickjacking import xframe_options_sameorigin
+from django.views.decorators.csrf import csrf_exempt
+
 from web import models
 from web.forms.wiki import WikiModelForm
-from web.utils import check_login
-from django.views.decorators.csrf import csrf_exempt
-from web.views import util
+from web.utils import check_login, uid
 from web.utils import minio_manager
 
 
@@ -94,7 +92,7 @@ def wiki_upload(request, project_id):
     image = request.FILES.get('editormd-image-file')
     project = models.Project.objects.get(id=project_id)
     # image.file
-    file_name = '{}.{}'.format(util.uid(image.name), image.name.rsplit('.')[-1])
+    file_name = '{}.{}'.format(uid(image.name), image.name.rsplit('.')[-1])
     # response data
     data = {'success': 0, 'message': None, 'url': None}
     try:

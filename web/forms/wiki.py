@@ -5,7 +5,6 @@ from django import forms
 from web.forms.bootstrap import BootstrapForm
 
 
-# ToDo 所有的form都有一个问题 get 和 post 时的 __init__ 不需要一样  优化它
 class WikiModelForm(forms.ModelForm, BootstrapForm):
     def __init__(self, project, method, *args, **kwargs):
         # super调用 学到了没

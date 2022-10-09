@@ -7,7 +7,7 @@ from django.shortcuts import render
 from web import models
 from web.utils import check_login
 from web.forms.account import RegisterModelForm, EmailForm, LoginForm
-from web.views.util import login_cookie_session, logout_cookie_session
+from web.utils import login_cookie_session, logout_cookie_session
 
 
 def register(request):

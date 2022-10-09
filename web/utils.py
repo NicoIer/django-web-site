@@ -1,18 +1,21 @@
 import datetime
+import hashlib
 import json
-import time
+import uuid
 from datetime import timedelta
+
 import minio.error
-from minio.deleteobjects import DeleteObject
-from minio.error import InvalidResponseError
-from django.http import HttpResponse, HttpRequest, HttpResponseRedirect, JsonResponse
+from django.conf import settings
+from django.http import HttpRequest, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse
 from django.shortcuts import redirect
 from minio import Minio
+from minio.deleteobjects import DeleteObject
+from minio.error import InvalidResponseError
+
 from web import models
 from web.forms.project import ProjectModelForm
 from web.models import User
-
-from django.conf import settings
 
 
 class Tracer(object):
@@ -195,3 +198,30 @@ def update_project_star(request: HttpRequest, project_type: str, project_id: int
         return redirect('project_list')
     else:
         return HttpResponse("?????")
+
+
+def login_cookie_session(request, response, user: User, max_age: int = 3600 * 24):
+    # session会默认加密
+    request.session['uid'] = user.id
+    request.session['username'] = user.username
+    response.set_cookie('uid', user.id, max_age=max_age)
+    response.set_cookie('username', user.username, max_age=max_age)
+    return response
+
+
+def logout_cookie_session(request, response: HttpResponse):
+    request.session.clear()
+    request.COOKIES.clear()
+    response.delete_cookie('username')
+    response.delete_cookie('uid')
+    return response
+
+
+def md5(string) -> str:
+    hash_obj = hashlib.md5(settings.SECRET_KEY.encode('utf-8'))
+    hash_obj.update(string.encode('utf-8'))
+    return hash_obj.hexdigest()
+
+
+def uid(string: str):
+    return md5("{}-{}".format(uuid.uuid4(), string))

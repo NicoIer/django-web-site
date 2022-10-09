@@ -11,7 +11,7 @@ from web import models
 from web.forms.file import FileFoldModelForm
 from web.models import FileRepository
 from web.utils import check_login, minio_manager
-from web.views.util import uid, md5
+from web.utils import uid, md5
 
 
 @check_login
