@@ -136,6 +136,11 @@
 								>
 									<span class="glyphicon glyphicon-pencil"></span>
 								</a>
+							{% elif file.file_type == 1 %}
+								<a type="button" class="btn btn-default btn-xs"
+								   href="{% url 'file_download' %}?bucket={{ project.bucket }}&file_key={{ file.key }}&file_name={{ file.name }}">
+									<span class="glyphicon glyphicon-save"></span>
+								</a>
 							{% endif %}
 							<a type="button" class="btn btn-danger btn-xs"
 							   data-toggle="modal" data-target="#deleteModal"
@@ -160,7 +165,7 @@
 					上传进度
 				</span>
 			</div>
-			{#			ToDo 进度条的显示方式好丑#}
+
 			<table class="table">
 				<tbody id="progress_list">
 
@@ -168,7 +173,7 @@
 			</table>
 		</div>
 	</div>
-	{#	ToDo 这里是假进度条#}
+
 	<div class="hide">
 		<table id="progress_template">
 			<tr>
@@ -235,6 +240,7 @@
 {% block js %}
 	<script type="text/javascript" src="{% static 'web/js/util.js' %}"></script>
 	<script>
+
         const bucket = '{{ project.bucket }}'
         const folder_id = '{{ parent_obj.id }}'
         $(function () {

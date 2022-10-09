@@ -30,6 +30,8 @@ urlpatterns = [
     re_path(r'file/(?P<project_id>\d+)/', file.file_home, name='file_home'),
     re_path(r'file_delete/(?P<project_id>\d+)/', file.file_delete, name='file_delete'),
     path('get_upload_url/', file.get_upload_url, name='get_upload_url'),
+    path(r'get_download_url/', file.get_download_url, name='get_download_url'),
+    path(r'file_download/', file.file_download, name='file_download'),
     re_path(r'upload_success/(?P<project_id>\d+)', file.upload_success, name='upload_success'),
     # 测试内容
     path('test/', test.test, name='test'),

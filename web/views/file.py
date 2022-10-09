@@ -1,3 +1,4 @@
+import datetime
 import queue
 from collections import deque
 from django.forms import model_to_dict
@@ -34,7 +35,6 @@ def file_home(request, project_id):
         dir_path = get_dir_path(parent_obj)
         # 获取所在文件夹下的所有文件 先文件夹 再文件
         file_list = models.FileRepository.objects.filter(project=project, parent=parent_obj).order_by('-file_type')
-
         form = FileFoldModelForm()
         return render(request, 'web/file_home.html', locals())
     elif request.method == 'POST':
@@ -81,6 +81,27 @@ def file_delete(request, project_id):
     return JsonResponse({'status': True})
 
 
+@check_login
+def file_download(request):
+    if request.method == 'GET':
+        file_key = request.GET.get('file_key')
+        bucket = request.GET.get('bucket')
+        file_name = request.GET.get('file_name')
+        _ = minio_manager.client.get_object(bucket, file_key)
+        response = HttpResponse(_)
+        response['Content-Disposition'] = f'attachment;filename="{file_name}"'
+        return response
+
+
+@check_login
+def get_download_url(request):
+    if request.method == 'GET':
+        file_key = request.GET.get('file_key')
+        bucket = request.GET.get('bucket')
+        url = minio_manager.get_obj_get_url(bucket, file_key, delta=datetime.timedelta(minutes=5))
+        return JsonResponse({'status': True, 'url': url})
+
+
 @csrf_exempt
 @check_login
 def upload_success(request, project_id):
@@ -117,7 +138,7 @@ def get_upload_url(request):
         # 检查文件夹下是否有重名文件
         folder_id = folder_id if folder_id else None
         folder_files = get_cur_folder_files(folder_id)
-
+        # 传入的bucket和文件名不为空 且 当前folder下不存在同名文件
         if bucket and file_name and not folder_files.filter(name=file_name).exists():
             # 检查这个文件名是否合法
             url = minio_manager.get_obj_put_url(request.POST.get('bucket'), md5(request.POST.get('file_name')))
