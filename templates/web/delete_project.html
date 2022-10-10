@@ -1,0 +1,16 @@
+{% extends 'web/conf.html' %}
+{% block list-group %}
+	<a href="{% url 'settings' project.id %}" class="list-group-item">个人中心</a>
+	<a href="#" class="list-group-item">我的资料</a>
+	<a href="#" class="list-group-item">修改密码</a>
+	<a href="{% url 'project_delete' project.id %}" class="list-group-item active">删除项目</a>
+{% endblock list-group %}
+
+{% block panel-heading %}
+	<span class="glyphicon glyphicon-user"></span>我的资料
+{% endblock panel-heading %}
+{% block panel-body %}
+	<a role="button" class="btn btn-danger" href="{% url 'project_ensure_delete' project_id %} ">
+		删除
+	</a>
+{% endblock panel-body %}

@@ -1,0 +1,44 @@
+{% extends 'extends/project-base.html' %}
+{% load project %}
+{% load static %}
+{% block css %}
+	<style>
+	</style>
+{% endblock css %}
+
+{% block head-content %}
+	<ul class="nav navbar-nav">
+		{% manage_nav_bar request project %}
+	</ul>
+{% endblock head-content %}
+
+{% block content %}
+	<div class="container clearfix" style="">
+		<div class="col-sm-3">
+			<div class="list-group">
+				<div>
+					{% block list-group %}
+						<a class="list-group-item active">个人中心</a>
+						<a href="#" class="list-group-item">我的资料</a>
+						<a href="#" class="list-group-item">修改密码</a>
+						<a href="{% url 'project_delete' project.id %}" class="list-group-item">删除项目</a>
+					{% endblock list-group %}
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-9">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					{% block panel-heading %}
+						<span class="glyphicon glyphicon-user"></span>我的资料
+					{% endblock panel-heading %}
+				</div>
+				<div class="panel-body">
+					{% block panel-body %}
+						表单删除项目
+					{% endblock panel-body %}
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock content %}
