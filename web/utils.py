@@ -1,3 +1,4 @@
+import asyncio
 import datetime
 import hashlib
 import json
@@ -130,6 +131,17 @@ class MinIoManager:
         except InvalidResponseError:
             raise
 
+    async def delete_bucket_async(self, bucket_name):
+        return self.delete_bucket(bucket_name)
+
+    def delete_bucket(self, bucket_name):
+        try:
+            object_names = list(map(lambda x: x.object_name, self.client.list_objects(bucket_name, recursive=True)))
+            self.delete_objs(bucket_name, object_names)
+            self.client.remove_bucket(bucket_name)
+        except minio.S3Error as e:
+            print(e)
+
     def get_obj_put_url(self, bucket_name, obj_name, delta=timedelta(days=2)) -> str:
         try:
             url = self.client.presigned_put_object(bucket_name, obj_name, delta)
@@ -150,10 +162,11 @@ minio_manager = MinIoManager()
 
 def check_form(form: ProjectModelForm, request: HttpRequest) -> JsonResponse:
     if form.is_valid():
-        # 为项目创建一个Bucket
+        # ToDo 这里可能会有异常 为项目创建一个Bucket
         _ = models.Project.objects.last()
+        _id = _.id + 1 if _ else 1
         # toDo 这里可能会有并发异常...
-        bucket_name = '{}-{}'.format(request.tracer.user.id, (_.id + 1))
+        bucket_name = '{}-{}'.format(request.tracer.user.id, (_id + 1))
         location = settings.MINIO_DEFAULT_REGION
 
         minio_manager.create_bucket(bucket_name, location)
