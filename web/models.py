@@ -56,8 +56,8 @@ class User(AbstractUser):
     #                             on_delete=models.PROTECT)
     # price_policy = models.ForeignKey(verbose_name='参与者', to='PricePolicy',default=None, on_delete=models.CASCADE)
     # project_num = models.SmallIntegerField(verbose_name='拥有的用户名')
-    joined_project = models.ManyToManyField(to='Project', verbose_name='参加的项目')
-    stared_project = models.ManyToManyField(to='Project', verbose_name='星标的项目', related_name='star_project')
+    joined_project = models.ManyToManyField(to='Project', verbose_name='参加的项目', related_name='joined_user')
+    stared_project = models.ManyToManyField(to='Project', verbose_name='星标的项目', related_name='stared_user')
 
 
 class PricePolicy(models.Model):
