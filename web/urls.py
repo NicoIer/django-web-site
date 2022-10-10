@@ -1,6 +1,6 @@
 from django.urls import path, re_path, include
 
-from web.views import account, project, manage, wiki, file
+from web.views import account, project, manage, wiki, file, conf
 from web.views import test
 
 manage_urls = [
@@ -12,7 +12,10 @@ manage_urls = [
     re_path(r'wiki/delete/(?P<wiki_id>\d+)', wiki.delete, name='wiki_delete'),
     re_path(r'wiki/edit/(?P<wiki_id>\d+)', wiki.edit, name='wiki_edit'),
     path('wiki/upload/', wiki.wiki_upload, name='wiki_upload'),
-    path('settings/', manage.dashboard, name='settings'),
+
+    path('settings/', conf.home, name='settings'),
+    path('settings/delete', conf.delete, name='project_delete'),
+    path('settings/ensure_delete', conf.ensure_delete, name='project_ensure_delete')
 
 ]
 
@@ -33,6 +36,7 @@ urlpatterns = [
     path(r'get_download_url/', file.get_download_url, name='get_download_url'),
     path(r'file_download/', file.file_download, name='file_download'),
     re_path(r'upload_success/(?P<project_id>\d+)', file.upload_success, name='upload_success'),
+
     # 测试内容
     path('test/', test.test, name='test'),
     # 获取数据 127.0.0.1：8000/web/get_data
