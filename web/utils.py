@@ -135,6 +135,7 @@ class MinIoManager:
         return self.delete_bucket(bucket_name)
 
     def delete_bucket(self, bucket_name):
+        # ToDo 删除逻辑或许有点问题
         try:
             object_names = list(map(lambda x: x.object_name, self.client.list_objects(bucket_name, recursive=True)))
             self.delete_objs(bucket_name, object_names)
@@ -169,7 +170,9 @@ def check_form(form: ProjectModelForm, request: HttpRequest) -> JsonResponse:
         bucket_name = '{}-{}'.format(request.tracer.user.id, (_id + 1))
         location = settings.MINIO_DEFAULT_REGION
 
+        # 创建桶 顺便改变逻辑
         minio_manager.create_bucket(bucket_name, location)
+        minio_manager.set_bucket_public_read(bucket_name)
         # 为项目属性赋值
         form.instance.bucket = bucket_name
         form.instance.region = location
