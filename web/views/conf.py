@@ -44,8 +44,8 @@ def ensure_delete(request: object, project_id: object) -> object:
             delete_result = asyncio.run(delete_async())
             # 删除MySQL记录
             # 删除与project有关联的user
-            project.star_project.clear()
-            project.joined_user.claer()
+            project.stared_user.clear()
+            project.joined_user.clear()
             project.delete()
             return render(request, 'web/project_home.html', locals())
         else:
