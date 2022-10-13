@@ -1,0 +1,95 @@
+{% extends 'extends/project-base.html' %}
+{% load project %}
+
+{% block head-content %}
+	<ul class="nav navbar-nav">
+		{% manage_nav_bar request project %}
+	</ul>
+{% endblock head-content %}
+{% block css %}
+	<style>
+        .issues-list .number {
+            width: 100px;
+            text-align: right;
+        }
+
+        .issues-list .number a {
+            font-weight: 500;
+            padding: 0 10px;
+        }
+
+        .issues-list .issue .tags {
+            padding: 10px 0;
+        }
+
+        .issues-list .issue .tags span {
+            margin-right: 20px;
+            display: inline-block;
+            font-size: 12px;
+        }
+
+        .issues-list .issue .tags .type {
+            padding: 1px 5px;
+            border-radius: 5px;
+        }
+	</style>
+{% endblock css %}
+{% block content %}
+	<div class="container-fluid clearfix" style="padding: 20px 0;">
+		<div class="col-sm-3">
+			<div class="panel panel-default">
+				<div class="panel panel-heading">
+					<span class="glyphicon glyphicon-search">筛选</span>
+				</div>
+				<div class="panel-body">
+
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-9">
+			<div class="panel panel-default">
+				<div class="panel panel-heading" style="margin-bottom: 0;">
+					<span class="glyphicon glyphicon-paperclip">问题</span>
+				</div>
+				<div class="panel-body" style="margin-top: 0;">
+					<a class="btn btn-success btn-sm">新建问题</a>
+					<a class="btn btn-primary btn-sm">邀请成员</a>
+				</div>
+				<table class="table">
+					<tbody class="issues-list">
+					<tr>
+						<td class="number">
+							<span class="glyphicon glyphicon-wrench"><a target="_blank" href="#">0001</a></span>
+
+
+						</td>
+						<td class="issue">
+							<div>
+								<a target="_blank" href="#">一个BUG需要修复</a>
+							</div>
+							<div class="tags">
+								<span class="type"><a role="button" class="btn btn-primary btn-sm">功能</a></span>
+								<span class="type glyphicon glyphicon-ok">已解决</span>
+								<span class="type glyphicon glyphicon-user">User</span>
+								<span class="type glyphicon glyphicon-time">更新时间</span>
+							</div>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<nav aria-label="...">
+				<ul class="pagination" style="margin-top: 0;">
+					<li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+					<li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+					<li><a href="#">2</a></li>
+					<li><a href="#">3</a></li>
+					<li><a href="#">4</a></li>
+					<li><a href="#">5</a></li>
+					<li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+{% endblock content %}

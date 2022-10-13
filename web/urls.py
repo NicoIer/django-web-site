@@ -1,12 +1,14 @@
 from django.urls import path, re_path, include
 
-from web.views import account, project, manage, wiki, file, conf
+from web.views import account, project, manage, wiki, file, conf, issues
 from web.views import test
 
 manage_urls = [
     path('dashboard/', manage.dashboard, name='dashboard'),
-    path('issues/', manage.dashboard, name='issues'),
+
+    path('issues/', issues.issues_home, name='issues'),
     path('statistics/', manage.dashboard, name='statistics'),
+
     path('wiki/', wiki.home, name='wiki'),
     path('wiki/add', wiki.add, name='wiki_add'),
     re_path(r'wiki/delete/(?P<wiki_id>\d+)', wiki.delete, name='wiki_delete'),
