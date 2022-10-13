@@ -135,6 +135,7 @@ class Module(models.Model):
 
 
 class Issues(models.Model):
+    creator = models.ForeignKey(verbose_name='创建者', to='User', on_delete=models.SET_NULL, null=True, blank=True)
     project = models.ForeignKey(verbose_name='项目', to='Project', on_delete=models.CASCADE)
     issues_type = models.ForeignKey(verbose_name='问题类型', to='IssuesType', on_delete=models.CASCADE)
     module = models.ForeignKey(verbose_name='模块', to='Module', null=True, blank=True, on_delete=models.CASCADE)
@@ -156,13 +157,13 @@ class Issues(models.Model):
         (6, '已关闭'),
         (7, '重新打开'),
     )
-    status = models.SmallIntegerField(verbose_name='状态', choices=status_choices, default=1),
+    status = models.SmallIntegerField(verbose_name='状态', choices=status_choices, default=1)
     # 当被指派人被删除后 ... Issues应该被删除么？
     assign = models.ForeignKey(verbose_name='指派', to='User', related_name='task', null=True, blank=True,
                                on_delete=models.CASCADE)
     attention = models.ManyToManyField(verbose_name='关注者', to='User', related_name='observe', blank=True)
     start_date = models.DateField(verbose_name='开始时间', null=True, blank=True)
-    end_data = models.DateTimeField(verbose_name='结束时间', null=True, blank=True)
+    end_date = models.DateTimeField(verbose_name='结束时间', null=True, blank=True)
     mode_choices = (
         (1, '公开模式'),
         (2, '隐私模式'),
