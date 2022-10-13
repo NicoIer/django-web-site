@@ -6,7 +6,7 @@ from web.models import Issues
 class IssuesModelForm(BootstrapForm, forms.ModelForm):
     class Meta:
         model = Issues
-        exclude = ['project', 'creator', 'start_date', 'end_date']
+        exclude = ['project', 'creator']
         # fields = '__all__'
 
     def __init__(self, *args, **kwargs):

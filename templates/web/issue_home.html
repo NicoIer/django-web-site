@@ -1,4 +1,27 @@
 {% extends 'web/dashboard.html' %}
+{% load static %}
+{% block markdown_link %}
+	<link rel="stylesheet" href="{% static 'editor.md/css/editormd.preview.min.css' %}">
+	<link rel="stylesheet" href="{% static 'editor.md/css/editormd.min.css' %}">
+
+	<script src="{% static 'editor.md/editormd.min.js' %}"></script>
+	<script src="{% static 'editor.md/lib/marked.min.js' %}"></script>
+	<script src="{% static 'editor.md/lib/prettify.min.js' %}"></script>
+	<script src="{% static 'editor.md/lib/raphael.min.js' %}"></script>
+	<script src="{% static 'editor.md/lib/underscore.min.js' %}"></script>
+	<script src="{% static 'editor.md/lib/sequence-diagram.min.js' %}"></script>
+	<script src="{% static 'editor.md/lib/flowchart.min.js' %}"></script>
+	<script src="{% static 'editor.md/lib/jquery.flowchart.min.js' %}"></script>
+	<script src="{% static 'editor.md/plugins/image-dialog/image-dialog.js' %}"></script>
+{% endblock markdown_link %}
+{% block links %}
+
+	<link rel="stylesheet" href="{% static 'bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css' %}">
+	<script src="{% static 'bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}">
+	</script>
+	<script src="{% static 'bootstrap-datepicker/dist/locales/bootstrap-datepicker.zh-CN.min.js' %}">
+	</script>
+{% endblock links %}
 {% block css %}
 	<style>
         .issues-list .number {
@@ -24,6 +47,10 @@
         .issues-list .issue .tags .type {
             padding: 1px 5px;
             border-radius: 5px;
+        }
+
+        .pd-0 {
+            padding: 0 !important;
         }
 	</style>
 {% endblock css %}
@@ -98,16 +125,130 @@
 				</div>
 				<div class="modal-body" style="padding-right: 40px">
 					<form id="add_form" class="form-horizontal" novalidate>
-						{% for field in form %}
-							<div class="form-group">
-								<label for="{{ field.id_for_label }}" class="col-sm-2 control-label">
-									{{ field.label }}
+						{% csrf_token %}
+
+						<div class="form-group">
+							<label for="{{ form.issues_type.id_for_label }}" class="col-sm-2 control-label">
+								{{ form.issues_type.label }}
+							</label>
+							<div class="col-sm-10">
+								{{ form.issues_type }}
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="{{ form.module.id_for_label }}" class="col-sm-2 control-label">
+								{{ form.module.label }}
+							</label>
+							<div class="col-sm-10">
+								{{ form.module }}
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="{{ form.subject.id_for_label }}" class="col-sm-2 control-label">
+								{{ form.subject.label }}
+							</label>
+							<div class="col-sm-10">
+								{{ form.subject }}
+							</div>
+						</div>
+
+						<div class="form-group clearfix">
+							<label for="{{ form.desc.id_for_label }}" class="col-sm-2 control-label">
+								{{ form.desc.label }}
+							</label>
+							<div class="col-sm-10">
+								<div>
+									<div id="markdown_edit">
+										{{ form.desc }}
+									</div>
+								</div>
+
+							</div>
+						</div>
+
+						<div class="form-group clearfix">
+							<div class="col-md-6 pd-0">
+								<label for="{{ form.status.id_for_label }}" class="col-md-4 control-label">
+									{{ form.status.label }}
 								</label>
-								<div class="col-sm-10">
-									{{ field }}
+								<div class="col-md-8 clearfix">
+									{{ form.status }}
 								</div>
 							</div>
-						{% endfor %}
+							<div class="col-md-6 pd-0">
+								<label for="{{ form.priority.id_for_label }}" class="col-md-4 control-label">
+									{{ form.priority.label }}
+								</label>
+								<div class="col-md-8 clearfix">
+									{{ form.priority }}
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group clearfix">
+							<div class="col-md-6 pd-0">
+								<label for="{{ form.assign.id_for_label }}" class="col-md-4 control-label">
+									{{ form.assign.label }}
+								</label>
+								<div class="col-md-8 clearfix">
+									{{ form.assign }}
+								</div>
+							</div>
+							<div class="col-md-6 pd-0">
+								<label for="{{ form.attention.id_for_label }}" class="col-md-4 control-label">
+									{{ form.attention.label }}
+								</label>
+								<div class="col-md-8 clearfix">
+									{{ form.attention }}
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group clearfix">
+							<div class="col-md-6 pd-0">
+								<label for="{{ form.start_date.id_for_label }}" class="col-md-4 control-label">
+									{{ form.start_date.label }}
+								</label>
+								<div class="col-md-8 clearfix">
+									<div class="input-group">
+										<span class="input-group-addon"><span
+												class="glyphicon glyphicon-calendar"></span></span>
+										{{ form.start_date }}
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6 pd-0">
+								<label for="{{ form.end_date.id_for_label }}" class="col-md-4 control-label">
+									{{ form.end_date.label }}
+								</label>
+								<div class="col-md-8 clearfix">
+									<div class="input-group">
+										<span class="input-group-addon"><span
+												class="glyphicon glyphicon-calendar"></span></span>
+										{{ form.end_date }}
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group clearfix">
+							<div class="col-md-6 pd-0">
+								<label for="{{ form.mode.id_for_label }}" class="col-md-4 control-label">
+									{{ form.mode.label }}
+								</label>
+								<div class="col-md-8 clearfix">
+									{{ form.mode }}
+								</div>
+							</div>
+							<div class="col-md-6 pd-0">
+								<label for="{{ form.parent.id_for_label }}" class="col-md-4 control-label">
+									{{ form.parent.label }}
+								</label>
+								<div class="col-md-8 clearfix">
+									{{ form.parent }}
+								</div>
+							</div>
+						</div>
 					</form>
 				</div>
 				<div class="modal-footer">
@@ -118,3 +259,79 @@
 		</div>
 	</div>
 {% endblock content %}
+
+{% block js %}
+	{% block form_js %}
+		<script type="text/javascript" src="{% static 'web/js/util.js' %}"></script>
+		<script>
+            function SubmitBtnClick() {
+                const check_data = form_check('#add_form');
+                const issue_data = check_data['data'];
+                $.ajax({
+                    url: '#',//
+                    type: 'post',
+                    data: issue_data,
+                    success: function (res) {
+                        if (res.status) {
+                            location.reload()
+                        } else {
+                            $.each(res.error, function (key, value) {
+                                const id_ = $('#id_' + key);
+                                setTimeout(function () {
+                                    id_.popover('hide')
+                                }, 3000);
+                                id_.attr('data-content', value)
+                                id_.popover('show')
+                            })
+                        }
+                    }
+                })
+            }
+
+		</script>
+	{% endblock form_js %}
+
+	{% block other_js %}
+		<script>
+            IMAGE_UPLOAD_URL = '{% url 'image_upload' project_id %}';
+            $(function () {
+                bindBootStrapShowEvent()// init markdown
+                initDatePicker();
+            });
+
+            function initDatePicker() {
+                $('#id_start_date').datepicker({
+                    format: 'yyyy-mm-dd',
+                    startDate: '0',
+                    language: 'zh-CN',
+                    autoclose: true
+                });
+                $('#id_end_date').datepicker({
+                    format: 'yyyy-mm-dd',
+                    startDate: '0',
+                    language: 'zh-CN',
+                    autoclose: true
+                });
+            }
+
+            function bindBootStrapShowEvent() {
+                $('#add_modal').on('shown.bs.modal', function (event) {
+                    init_markdown();
+                })
+            }
+
+            function init_markdown() {
+                // id + 配置
+                editormd('markdown_edit', {
+                    placeholder: '请输入内容',
+                    height: 500,
+                    emoji: false,
+                    imageUpload: true,
+                    imageFormats: ['png', 'jpg', 'jpeg', 'gif'],
+                    imageUploadURL: IMAGE_UPLOAD_URL,
+                    path: '{% static 'editor.md/lib' %}/',
+                });
+            }
+		</script>
+	{% endblock other_js %}
+{% endblock js %}
