@@ -1,11 +1,4 @@
-{% extends 'extends/project-base.html' %}
-{% load project %}
-
-{% block head-content %}
-	<ul class="nav navbar-nav">
-		{% manage_nav_bar request project %}
-	</ul>
-{% endblock head-content %}
+{% extends 'web/dashboard.html' %}
 {% block css %}
 	<style>
         .issues-list .number {
@@ -60,8 +53,6 @@
 					<tr>
 						<td class="number">
 							<span class="glyphicon glyphicon-wrench"><a target="_blank" href="#">0001</a></span>
-
-
 						</td>
 						<td class="issue">
 							<div>
@@ -90,6 +81,8 @@
 					<li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
 				</ul>
 			</nav>
+
 		</div>
 	</div>
+
 {% endblock content %}

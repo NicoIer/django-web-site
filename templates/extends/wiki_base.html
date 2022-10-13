@@ -1,12 +1,4 @@
-{% extends 'extends/project-base.html' %}
-{% load project %}
-
-{% block head-content %}
-	<ul class="nav navbar-nav">
-		{% manage_nav_bar request project %}
-	</ul>
-{% endblock head-content %}
-
+{% extends 'web/dashboard.html' %}
 {% block content %}
 	{% block panel-content %}
 		<div class="container-fluid project">

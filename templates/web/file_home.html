@@ -1,4 +1,4 @@
-{% extends 'extends/project-base.html' %}
+{% extends 'web/dashboard.html' %}
 {% load project %}
 {% load static %}
 {% block css %}
@@ -54,14 +54,6 @@
         }
 	</style>
 {% endblock css %}
-
-{% block head-content %}
-	<ul class="nav navbar-nav">
-		{% manage_nav_bar request project %}
-	</ul>
-{% endblock head-content %}
-
-
 
 {% block content %}
 	<div class="container-fluid">
