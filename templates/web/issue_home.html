@@ -45,7 +45,8 @@
 					<span class="glyphicon glyphicon-paperclip">问题</span>
 				</div>
 				<div class="panel-body" style="margin-top: 0;">
-					<a class="btn btn-success btn-sm">新建问题</a>
+					<a class="btn btn-success btn-sm" data-toggle="modal"
+					   data-target="#add_modal">新建问题</a>
 					<a class="btn btn-primary btn-sm">邀请成员</a>
 				</div>
 				<table class="table">
@@ -85,4 +86,24 @@
 		</div>
 	</div>
 
+
+	<div id="add_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title">新建问题</h4>
+				</div>
+				<div class="modal-body" style="padding-right: 40px">
+					问题相关的表单!!!
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+					<button type="button" class="btn btn-primary">添加</button>
+				</div>
+			</div>
+		</div>
+	</div>
 {% endblock content %}
