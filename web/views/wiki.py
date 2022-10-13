@@ -80,9 +80,10 @@ def edit(request, project_id, wiki_id):
     return render(request, 'web/wiki_edit.html', locals())
 
 
+# ToDo 移动这个函数到其他位置
 @xframe_options_sameorigin
 @csrf_exempt
-def wiki_upload(request, project_id):
+def upload_image_url(request, project_id):
     """
     markdown 上传图片
     :param request:

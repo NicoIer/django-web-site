@@ -52,7 +52,7 @@
 
 {% block other_js %}
 	<script>
-        WIKI_UPLOAD_URL = '{% url 'wiki_upload' project_id %}';
+        WIKI_UPLOAD_URL = '{% url 'image_upload' project_id %}';
         $(function () {
             init_markdown()// init markdown
         });

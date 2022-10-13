@@ -7,13 +7,16 @@ manage_urls = [
     path('dashboard/', manage.dashboard, name='dashboard'),
 
     path('issues/', issues.issues_home, name='issues'),
+    # path('issues/create/',issues.create_issue,name='create_isse'),
+    
     path('statistics/', manage.dashboard, name='statistics'),
 
     path('wiki/', wiki.home, name='wiki'),
     path('wiki/add', wiki.add, name='wiki_add'),
     re_path(r'wiki/delete/(?P<wiki_id>\d+)', wiki.delete, name='wiki_delete'),
     re_path(r'wiki/edit/(?P<wiki_id>\d+)', wiki.edit, name='wiki_edit'),
-    path('wiki/upload/', wiki.wiki_upload, name='wiki_upload'),
+    # ToDo 改变这个上传图片的view的路由
+    path('wiki/upload/', wiki.upload_image_url, name='image_upload'),
 
     path('settings/', conf.home, name='settings'),
     path('settings/delete', conf.delete, name='project_delete'),
