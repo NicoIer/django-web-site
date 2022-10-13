@@ -1,5 +1,5 @@
-{% load bootstrap3 %}
 {% load static %}
+{% load bootstrap3 %}
 {% load project %}
 <!DOCTYPE html>
 <html lang="zh-Hans">
@@ -8,7 +8,9 @@
 	<meta name="viewport" content="width=device-width,initial-scale=1">
 	{% bootstrap_css %}
 	{% bootstrap_javascript %}
-
+	{#	<script src="{% static 'JQuery/JQuery3.1.js' %}"></script>#}
+	{#	<link rel="stylesheet" href="{% static 'bootstrapmini5.1/bootstrap.css' %}">#}
+	{#	<script src="{% static 'bootstrapmini5.1/bootstrap.min.js' %}"></script>#}
 	{% block markdown_link %}
 	{% endblock markdown_link %}
 	{% block links %}

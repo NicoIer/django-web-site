@@ -1,9 +1,9 @@
 {% extends 'web/dashboard.html' %}
 {% load static %}
+{% load bootstrap3 %}
 {% block markdown_link %}
 	<link rel="stylesheet" href="{% static 'editor.md/css/editormd.preview.min.css' %}">
 	<link rel="stylesheet" href="{% static 'editor.md/css/editormd.min.css' %}">
-
 	<script src="{% static 'editor.md/editormd.min.js' %}"></script>
 	<script src="{% static 'editor.md/lib/marked.min.js' %}"></script>
 	<script src="{% static 'editor.md/lib/prettify.min.js' %}"></script>
@@ -15,12 +15,16 @@
 	<script src="{% static 'editor.md/plugins/image-dialog/image-dialog.js' %}"></script>
 {% endblock markdown_link %}
 {% block links %}
-
 	<link rel="stylesheet" href="{% static 'bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css' %}">
 	<script src="{% static 'bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}">
 	</script>
 	<script src="{% static 'bootstrap-datepicker/dist/locales/bootstrap-datepicker.zh-CN.min.js' %}">
-	</script>
+	</script>'
+
+	<link rel="stylesheet" href="{% static 'bootstrap-select-1.13.14/dist/css/bootstrap-select.min.css' %}">
+	<script src="{% static 'bootstrap-select-1.13.14/dist/js/bootstrap-select.min.js' %}"></script>
+	<script src="{% static 'bootstrap-select-1.13.14/js/i18n/defaults-zh_CN.js' %}"></script>
+
 {% endblock links %}
 {% block css %}
 	<style>
@@ -253,7 +257,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-					<button type="button" class="btn btn-primary">添加</button>
+					<button type="submit" class="btn btn-primary" onclick="SubmitBtnClick()">添加</button>
 				</div>
 			</div>
 		</div>
@@ -267,7 +271,8 @@
             function SubmitBtnClick() {
                 const check_data = form_check('#add_form');
                 const issue_data = check_data['data'];
-                $.ajax({
+                console.log(issue_data)
+                /*$.ajax({
                     url: '#',//
                     type: 'post',
                     data: issue_data,
@@ -285,7 +290,7 @@
                             })
                         }
                     }
-                })
+                })*/
             }
 
 		</script>

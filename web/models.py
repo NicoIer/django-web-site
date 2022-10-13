@@ -160,8 +160,9 @@ class Issues(models.Model):
     status = models.SmallIntegerField(verbose_name='状态', choices=status_choices, default=1)
     # 当被指派人被删除后 ... Issues应该被删除么？
     assign = models.ForeignKey(verbose_name='指派', to='User', related_name='task', null=True, blank=True,
-                               on_delete=models.CASCADE)
-    attention = models.ManyToManyField(verbose_name='关注者', to='User', related_name='observe', blank=True)
+                               on_delete=models.CASCADE, default=None)
+    attention = models.ManyToManyField(verbose_name='关注者', to='User', related_name='observe', blank=True,
+                                       null=True)
     start_date = models.DateField(verbose_name='开始时间', null=True, blank=True)
     end_date = models.DateTimeField(verbose_name='结束时间', null=True, blank=True)
     mode_choices = (
@@ -170,7 +171,7 @@ class Issues(models.Model):
     )
     mode = models.SmallIntegerField(verbose_name='模式', choices=mode_choices, default=1)
     parent = models.ForeignKey(verbose_name='父问题', to='Issues', related_name='child', on_delete=models.SET_NULL,
-                               null=True, blank=True)
+                               null=True, blank=True, default=None)
 
 
 class IssuesType(models.Model):
