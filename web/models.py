@@ -161,8 +161,7 @@ class Issues(models.Model):
     # 当被指派人被删除后 ... Issues应该被删除么？
     assign = models.ForeignKey(verbose_name='指派', to='User', related_name='task', null=True, blank=True,
                                on_delete=models.CASCADE, default=None)
-    attention = models.ManyToManyField(verbose_name='关注者', to='User', related_name='observe', blank=True,
-                                       null=True)
+    attention = models.ManyToManyField(verbose_name='关注者', to='User', related_name='observe')
     start_date = models.DateField(verbose_name='开始时间', null=True, blank=True)
     end_date = models.DateTimeField(verbose_name='结束时间', null=True, blank=True)
     mode_choices = (
