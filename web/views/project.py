@@ -19,7 +19,7 @@ def project_home(request):
         star_projects = request.tracer.user.stared_project.all()
         # 当前用户创建但未被星标的项目
         create_projects = []
-        for create in request.tracer.user.project_set.all():
+        for create in request.tracer.user.created_project.all():
             if not create.star:
                 create_projects.append(create)
         # 当前用户加入的但没有被自己星标的项目
