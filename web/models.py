@@ -175,6 +175,7 @@ class Issues(models.Model):
 
 
 class IssuesType(models.Model):
+    PROJECT_INIT_LIST = ['task', 'bug', 'function']
     title = models.CharField(verbose_name='类型名称', max_length=128)
     project = models.ForeignKey(verbose_name='项目', to='Project', on_delete=models.CASCADE)
 
