@@ -13,5 +13,5 @@ def issues_home(request, project_id):
     except Exception:
         return redirect('project_list')
     if request.method == 'GET':
-        form = IssuesModelForm()
+        form = IssuesModelForm(project=project, method='GET')
         return render(request, 'web/issue_home.html', locals())
