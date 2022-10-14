@@ -38,7 +38,8 @@ class Project(models.Model):
     region = models.CharField(verbose_name='minIO对象存储区域', max_length=32, default="")
 
     join_count = models.SmallIntegerField(verbose_name='参与人数', default=1)
-    creator = models.ForeignKey(to='User', verbose_name='创建者', max_length=32, on_delete=models.CASCADE)
+    creator = models.ForeignKey(to='User', verbose_name='创建者', max_length=32,
+                                on_delete=models.CASCADE, related_name='created_project')
     create_datetime = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
 
     # 根据哪张表的哪些字段来索引
