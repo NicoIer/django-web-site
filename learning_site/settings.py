@@ -66,7 +66,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
             ],
             'libraries': {
-                'web_tag': 'web.templatetags.project'
+                'project': 'web.templatetags.project',
+                'issues_tag': 'web.templatetags.issues_tag'
             }
         },
     },
