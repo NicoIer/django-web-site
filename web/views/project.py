@@ -62,14 +62,14 @@ def check_project_form(form: ProjectModelForm, request: HttpRequest) -> JsonResp
 
         # 验证通过
         form.instance.creator = request.tracer.user
+        # 保存数据到数据库
+        form.save()
         # 为项目添加默认ISSUE_TYPE
         issues = []
         for ISSUE_TYPE in models.IssuesType.PROJECT_INIT_LIST:
             issues.append(models.IssuesType(project=form.instance, title=ISSUE_TYPE))
         models.IssuesType.objects.bulk_create(issues)  # 批量添加
 
-        # 保存数据到数据库
-        form.save()
         #
         return_data = {
             'status': True,

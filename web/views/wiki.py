@@ -17,7 +17,7 @@ def home(request, project_id: int):
         project = models.Project.objects.get(id=project_id)
     except Exception:
         return redirect('project_list')
-    if (project in request.tracer.user.joined_project.all()) or (project in request.tracer.user.project_set.all()):
+    if (project in request.tracer.user.joined_project.all()) or (project in request.tracer.user.created_project.all()):
         wiki_id = request.GET.get('wiki_id', None)
 
         if wiki_id and wiki_id.isdecimal():
