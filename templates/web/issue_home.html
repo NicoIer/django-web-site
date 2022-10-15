@@ -51,6 +51,7 @@
         .issues-list .issue .tags .type {
             padding: 1px 5px;
             border-radius: 5px;
+		{#background-color: grey;#}
         }
 
         .pd-0 {
@@ -82,22 +83,59 @@
 				</div>
 				<table class="table">
 					<tbody class="issues-list">
-					<tr>
-						<td class="number">
-							<span class="glyphicon glyphicon-wrench"><a target="_blank" href="#">0001</a></span>
-						</td>
-						<td class="issue">
-							<div>
-								<a target="_blank" href="#">一个BUG需要修复</a>
-							</div>
-							<div class="tags">
-								<span class="type"><a role="button" class="btn btn-primary btn-sm">功能</a></span>
-								<span class="type glyphicon glyphicon-ok">已解决</span>
-								<span class="type glyphicon glyphicon-user">User</span>
-								<span class="type glyphicon glyphicon-time">更新时间</span>
-							</div>
-						</td>
-					</tr>
+					{% for issue in issue_list %}
+						<tr>
+							<td class="number">
+								<i class="fa fa-circle text-{{ issue.priority }}">
+									<a target="_blank" href="#">
+										{{ issue.id }}
+									</a>
+								</i>
+							</td>
+							<td class="issue">
+								<div>
+									<a target="_blank" href="#">{{ issue.subject }}</a>
+								</div>
+								<div class="tags">
+									<span class="type">
+										<a role="button" class="btn btn-primary btn-xs">
+										{{ issue.issues_type }}
+										</a>
+									</span>
+									<span>
+										<i class="fa fa-refresh">
+										{{ issue.get_status_display }}
+										</i>
+									</span>
+									{% if issue.assign %}
+										<span>
+										<i class="fa fa-hand-o-right">
+											{{ issue.assign }}
+										</i>
+										</span>
+									{% endif %}
+
+									<span>
+										<i class="fa fa-user">
+											{{ issue.creator }}
+										</i>
+									</span>
+									<span>
+										<i class="fa fa-clock-o">
+											更新于:{{ issue.latest_update_date }}
+										</i>
+
+									</span>
+									<span>
+										<i class="fa fa-calendar">
+											截止于:{{ issue.end_date }}
+										</i>
+									</span>
+								</div>
+							</td>
+						</tr>
+					{% endfor %}
+
 					</tbody>
 				</table>
 			</div>

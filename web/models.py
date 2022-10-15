@@ -165,6 +165,7 @@ class Issues(models.Model):
     attention = models.ManyToManyField(verbose_name='关注者', to='User', related_name='observe')
     start_date = models.DateField(verbose_name='开始时间', null=True, blank=True)
     end_date = models.DateTimeField(verbose_name='结束时间', null=True, blank=True)
+    latest_update_date = models.DateTimeField(verbose_name='更新时间', auto_now=True)
     mode_choices = (
         (1, '公开模式'),
         (2, '隐私模式'),
