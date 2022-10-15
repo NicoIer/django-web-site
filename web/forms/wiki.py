@@ -26,6 +26,7 @@ class WikiModelForm(forms.ModelForm, BootstrapForm):
         BootstrapForm.__init__(self, *args, **kwargs)
         #
         self.fields['parent'].required = False
+        self.fields['content'].required = False
 
     class Meta:
         model = models.Wiki

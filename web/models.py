@@ -6,7 +6,7 @@ class Wiki(models.Model):
     # 我是多的一方
     project = models.ForeignKey(verbose_name='项目', to='Project', on_delete=models.CASCADE)
     title = models.CharField(verbose_name='标题', max_length=32)
-    content = models.TextField(verbose_name='内容')
+    content = models.TextField(verbose_name='内容', blank=True, null=True)
     # 反向查询时用的name 就是 related_name
     parent = models.ForeignKey(verbose_name='夫文章', on_delete=models.CASCADE, to='Wiki', related_name='child',
                                default=None, null=True, blank=True)
