@@ -1,3 +1,4 @@
+from django.core.paginator import Page, Paginator, PageNotAnInteger, InvalidPage, EmptyPage
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 
@@ -12,8 +13,44 @@ def issues_home(request, project_id):
         project = models.Project.objects.get(id=project_id)
     except Exception:
         return redirect('project_list')
+
     if request.method == 'GET':
-        issue_list = models.Issues.objects.filter(project=project)
+        # issues
+        all_issues = models.Issues.objects.filter(project=project)
+        # 生成分页
+        paginator = Paginator(all_issues, 5)
+        cur_page_idx = request.GET.get('page')
+        
+        try:
+            issue_list = paginator.page(cur_page_idx)
+            cur_page_idx = int(cur_page_idx)
+        except PageNotAnInteger:
+            # 如果请求的页数不是整数, 返回第一页。
+            issue_list = paginator.page(1)
+            cur_page_idx = 1
+        except EmptyPage:
+            # 如果请求的页数不在合法的页数范围内，返回结果的最后一页。
+            issue_list = paginator.page(paginator.num_pages)
+        except InvalidPage:
+            return redirect('issues')
+
+        # 生成页码
+        if cur_page_idx < 6:
+            if paginator.num_pages <= 10:
+                page_range = range(1, paginator.num_pages + 1)
+            else:
+                page_range = range(1, 11)
+        elif (cur_page_idx >= 6) and (cur_page_idx <= paginator.num_pages - 5):
+            page_range = range(cur_page_idx - 5, cur_page_idx + 5)
+        else:
+            page_range = range(paginator.num_pages - 9, paginator.num_pages + 1)
+
+        have_next = cur_page_idx < paginator.num_pages
+        if have_next:
+            next_page_idx = cur_page_idx + 1
+        have_prev = cur_page_idx != 1
+        if have_prev:
+            prev_page_idx = cur_page_idx - 1
 
         form = IssuesModelForm(project=project, method='GET')
         return render(request, 'web/issue_home.html', locals())
