@@ -37,7 +37,6 @@ class IssuesModelForm(BootstrapForm, forms.ModelForm):
         forms.ModelForm.__init__(self, *args, **kwargs)
         BootstrapForm.__init__(self, select_set=select_set)
         # 部分可选字段需要进行限制
-        # assign被指派人应该参加/创建了这个项目
         if method == 'GET':
             # 获取当前项目的参与者
             total_users = [(project.creator.id, project.creator.username), ]
@@ -54,4 +53,11 @@ class IssuesModelForm(BootstrapForm, forms.ModelForm):
             # 获取当前项目的module
             modules = models.Module.objects.filter(project=project).values_list('id', 'title')
             self.fields['module'].choices = list(modules)
-        # self.fields['parent'].required = False
+        elif method == 'POST':
+            self.fields['parent'].required = False
+            self.fields['desc'].required = False
+            self.fields['start_date'].required = False
+            self.fields['end_date'].required = False
+            self.fields['assign'].required = False
+            self.fields['attention'].required = False
+            self.fields['module'].required = False

@@ -7,8 +7,8 @@ manage_urls = [
     path('dashboard/', manage.dashboard, name='dashboard'),
 
     path('issues/', issues.issues_home, name='issues'),
-    # path('issues/create/',issues.create_issue,name='create_isse'),
-    
+    path('issues/check/', issues.issue_from_check, name='issue_form_check'),
+
     path('statistics/', manage.dashboard, name='statistics'),
 
     path('wiki/', wiki.home, name='wiki'),
