@@ -1,6 +1,5 @@
 {% extends 'web/dashboard.html' %}
 {% load static %}
-{% load bootstrap3 %}
 {% load issues_tag %}
 {% block markdown_link %}
 	<link rel="stylesheet" href="{% static 'editor.md/css/editormd.preview.min.css' %}">
@@ -84,18 +83,21 @@
 				</div>
 				<table class="table">
 					<tbody class="issues-list">
+
 					{% for issue in issue_list %}
 						<tr>
 							<td class="number">
 								<i class="fa fa-circle text-{{ issue.priority }}">
-									<a target="_blank" href="#">
+									<a href="{% url 'issue_detail' project_id issue.id %}">
 										{% id_padding issue.id %}
 									</a>
 								</i>
 							</td>
 							<td class="issue">
 								<div>
-									<a target="_blank" href="#">{{ issue.subject }}</a>
+									<a href="{% url 'issue_detail' project_id issue.id %}">
+										{{ issue.subject }}
+									</a>
 								</div>
 								<div class="tags">
 									<span class="type">

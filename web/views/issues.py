@@ -20,7 +20,7 @@ def issues_home(request, project_id):
         # 生成分页
         paginator = Paginator(all_issues, 5)
         cur_page_idx = request.GET.get('page')
-        
+
         try:
             issue_list = paginator.page(cur_page_idx)
             cur_page_idx = int(cur_page_idx)
@@ -54,6 +54,19 @@ def issues_home(request, project_id):
 
         form = IssuesModelForm(project=project, method='GET')
         return render(request, 'web/issue_home.html', locals())
+
+
+@check_login
+def issue_detail(request, project_id, issue_id):
+    try:
+        project = models.Project.objects.get(id=project_id)
+    except Exception:
+        return redirect('project_list')
+    if request.method == 'GET':
+        form = IssuesModelForm(project=project, method='GET')
+        return render(request, 'web/issue_detail.html', locals())
+    elif request.method == 'POST':
+        pass
 
 
 @check_login

@@ -1,0 +1,229 @@
+{% extends 'web/issue_home.html' %}
+{% load static %}
+{% block css %}
+{% endblock css %}
+
+
+{% block content %}
+	<div class="container-fluid clearfix" style="padding: 20px 0;">
+		<div class="col-sm-6">
+			<div class="panel panel-default">
+				<div class="panel panel-heading" style="margin-bottom: 0;">
+					<span class="glyphicon glyphicon-search">更新问题</span>
+				</div>
+				<div class="panel-body">
+					<form id="edit_form" class="form-horizontal" novalidate>
+						{% csrf_token %}
+
+						<div class="form-group">
+							<label for="{{ form.issues_type.id_for_label }}" class="col-sm-2 control-label">
+								{{ form.issues_type.label }}
+							</label>
+							<div class="col-sm-10">
+								{{ form.issues_type }}
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="{{ form.module.id_for_label }}" class="col-sm-2 control-label">
+								{{ form.module.label }}
+							</label>
+							<div class="col-sm-10">
+								{{ form.module }}
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="{{ form.subject.id_for_label }}" class="col-sm-2 control-label">
+								{{ form.subject.label }}
+							</label>
+							<div class="col-sm-10">
+								{{ form.subject }}
+							</div>
+						</div>
+
+						<div class="form-group clearfix">
+							<label for="{{ form.desc.id_for_label }}" class="col-sm-2 control-label">
+								{{ form.desc.label }}
+							</label>
+							<div class="col-sm-10">
+								<div>
+									<div id="markdown_edit">
+										{{ form.desc }}
+									</div>
+								</div>
+
+							</div>
+						</div>
+
+						<div class="form-group clearfix">
+							<div class="col-md-6 pd-0">
+								<label for="{{ form.status.id_for_label }}" class="col-md-4 control-label">
+									{{ form.status.label }}
+								</label>
+								<div class="col-md-8 clearfix">
+									{{ form.status }}
+								</div>
+							</div>
+							<div class="col-md-6 pd-0">
+								<label for="{{ form.priority.id_for_label }}" class="col-md-4 control-label">
+									{{ form.priority.label }}
+								</label>
+								<div class="col-md-8 clearfix">
+									{{ form.priority }}
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group clearfix">
+							<div class="col-md-6 pd-0">
+								<label for="{{ form.assign.id_for_label }}" class="col-md-4 control-label">
+									{{ form.assign.label }}
+								</label>
+								<div class="col-md-8 clearfix">
+									{{ form.assign }}
+								</div>
+							</div>
+							<div class="col-md-6 pd-0">
+								<label for="{{ form.attention.id_for_label }}" class="col-md-4 control-label">
+									{{ form.attention.label }}
+								</label>
+								<div class="col-md-8 clearfix">
+									{{ form.attention }}
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group clearfix">
+							<div class="col-md-6 pd-0">
+								<label for="{{ form.start_date.id_for_label }}" class="col-md-4 control-label">
+									{{ form.start_date.label }}
+								</label>
+								<div class="col-md-8 clearfix">
+									<div class="input-group">
+										<span class="input-group-addon"><span
+												class="glyphicon glyphicon-calendar"></span></span>
+										{{ form.start_date }}
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6 pd-0">
+								<label for="{{ form.end_date.id_for_label }}" class="col-md-4 control-label">
+									{{ form.end_date.label }}
+								</label>
+								<div class="col-md-8 clearfix">
+									<div class="input-group">
+										<span class="input-group-addon"><span
+												class="glyphicon glyphicon-calendar"></span></span>
+										{{ form.end_date }}
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group clearfix">
+							<div class="col-md-6 pd-0">
+								<label for="{{ form.mode.id_for_label }}" class="col-md-4 control-label">
+									{{ form.mode.label }}
+								</label>
+								<div class="col-md-8 clearfix">
+									{{ form.mode }}
+								</div>
+							</div>
+							<div class="col-md-6 pd-0">
+								<label for="{{ form.parent.id_for_label }}" class="col-md-4 control-label">
+									{{ form.parent.label }}
+								</label>
+								<div class="col-md-8 clearfix">
+									{{ form.parent }}
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-6">
+			<div class="panel panel-default">
+				<div class="panel panel-heading" style="margin-bottom: 0;">
+					<span class="glyphicon glyphicon-paperclip">操作记录</span>
+				</div>
+				<div class="panel-body" style="margin-top: 0;">
+
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+{% endblock content %}
+
+{% block js %}
+	<script type="text/javascript" src="{% static 'web/js/util.js' %}"></script>
+	<script>
+        function SubmitBtnClick() {
+            const check_data = form_check('#edit_form');
+            const issue_data = check_data['data'];
+            console.log(issue_data)
+            /*$.ajax({
+                url: '
+            {% url 'issue_form_check' project_id %}',//
+                type: 'post',
+                data: issue_data,
+                success: function (res) {
+                    console.log(res);
+                    if (res.status) {
+                        console.log('成功')
+                        location.reload();
+                    } else {
+                        console.log(res.error);
+                        console.log('失败');
+                        $.each(res.error, function (key, value) {
+                            const id_ = $('#id_' + key);
+                            setTimeout(function () {
+                                id_.popover('hide')
+                            }, 3000);
+                            id_.attr('data-content', value);
+                            id_.popover('show');
+                        })
+                    }
+                }
+            })*/
+        }
+
+	</script>
+
+	<script>
+        IMAGE_UPLOAD_URL = '{% url 'image_upload' project_id %}';
+        $(function () {
+            init_markdown()// init markdown
+            initDatePicker();
+        });
+
+        function initDatePicker() {
+            $('#id_start_date').datepicker({
+                format: 'yyyy-mm-dd',
+                startDate: '0',
+                language: 'zh-CN',
+                autoclose: true
+            });
+            $('#id_end_date').datepicker({
+                format: 'yyyy-mm-dd',
+                startDate: '0',
+                language: 'zh-CN',
+                autoclose: true
+            });
+        }
+
+        function init_markdown() {
+            // id + 配置
+            editormd('markdown_edit', {
+                placeholder: '请输入内容',
+                height: 500,
+                emoji: false,
+                imageUpload: true,
+                imageFormats: ['png', 'jpg', 'jpeg', 'gif'],
+                imageUploadURL: IMAGE_UPLOAD_URL,
+                path: '{% static 'editor.md/lib' %}/',
+            });
+        }
+	</script>
+{% endblock js %}
