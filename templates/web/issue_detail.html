@@ -138,6 +138,12 @@
 							</div>
 						</div>
 					</form>
+					<div style="float: right;">
+						<button type="submit" class="btn btn-primary" style="position: center;"
+						        onclick="SubmitBtnClick()">修改
+						</button>
+					</div>
+
 				</div>
 			</div>
 		</div>
@@ -163,30 +169,19 @@
             const check_data = form_check('#edit_form');
             const issue_data = check_data['data'];
             console.log(issue_data)
-            /*$.ajax({
-                url: '
-            {% url 'issue_form_check' project_id %}',//
-                type: 'post',
+            $.ajax({
+                url: '{% url 'issue_detail' project_id issue_id %}',
+                method: 'post',
                 data: issue_data,
                 success: function (res) {
-                    console.log(res);
+                    console.log(res)
                     if (res.status) {
-                        console.log('成功')
-                        location.reload();
+                        location.reload()
                     } else {
-                        console.log(res.error);
-                        console.log('失败');
-                        $.each(res.error, function (key, value) {
-                            const id_ = $('#id_' + key);
-                            setTimeout(function () {
-                                id_.popover('hide')
-                            }, 3000);
-                            id_.attr('data-content', value);
-                            id_.popover('show');
-                        })
+
                     }
                 }
-            })*/
+            })
         }
 
 	</script>
@@ -223,7 +218,22 @@
                 imageFormats: ['png', 'jpg', 'jpeg', 'gif'],
                 imageUploadURL: IMAGE_UPLOAD_URL,
                 path: '{% static 'editor.md/lib' %}/',
+                //默认预览方式显示
+                toolbarIcons: function () {
+                    return ['bold', 'hr', 'del', 'italic', 'quote', '|', 'image', 'preview', 'watch', '||', 'save']
+                },
+                toolbarAutoFixed: false,
+                toolbarCustomIcons: {
+                    save: '<input type=button value="save" class="btn btn-success btn-sm" onclick="saveDesc();">'
+                },
+                onload: function () {
+                    this.previewing();
+                }
             });
+        }
+
+        function saveDesc() {
+            console.log('点击了markdown save按钮')
         }
 	</script>
 {% endblock js %}

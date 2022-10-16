@@ -16,7 +16,7 @@ def issues_home(request, project_id):
 
     if request.method == 'GET':
         # issues
-        all_issues = models.Issues.objects.filter(project=project)
+        all_issues = models.Issues.objects.filter(project=project).order_by('id')
         # 生成分页
         paginator = Paginator(all_issues, 5)
         cur_page_idx = request.GET.get('page')
@@ -62,11 +62,20 @@ def issue_detail(request, project_id, issue_id):
         project = models.Project.objects.get(id=project_id)
     except Exception:
         return redirect('project_list')
+    # 查询当前issue的内容
+    issue = models.Issues.objects.get(id=issue_id)
+
     if request.method == 'GET':
-        form = IssuesModelForm(project=project, method='GET')
+        form = IssuesModelForm(instance=issue, project=project, method='GET')
         return render(request, 'web/issue_detail.html', locals())
     elif request.method == 'POST':
-        pass
+        # 编辑
+        form = IssuesModelForm(instance=issue, project=project, method='POST', data=request.POST)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'status': True})
+        else:
+            return JsonResponse({'status': False, 'error': form.errors})
 
 
 @check_login

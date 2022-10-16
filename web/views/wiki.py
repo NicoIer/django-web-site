@@ -76,7 +76,8 @@ def edit(request, project_id, wiki_id):
             url = reverse('wiki', kwargs={'project_id': project_id})
             url = '{}?wiki_id={}'.format(url, wiki_id)
             return JsonResponse({'status': True, 'errors': form.errors, 'href': url})
-
+        else:
+            return JsonResponse({'status': False, 'error': form.errors})
     return render(request, 'web/wiki_edit.html', locals())
 
 

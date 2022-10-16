@@ -88,14 +88,14 @@
 						<tr>
 							<td class="number">
 								<i class="fa fa-circle text-{{ issue.priority }}">
-									<a href="{% url 'issue_detail' project_id issue.id %}">
+									<a target="_blank" href="{% url 'issue_detail' project_id issue.id %}">
 										{% id_padding issue.id %}
 									</a>
 								</i>
 							</td>
 							<td class="issue">
 								<div>
-									<a href="{% url 'issue_detail' project_id issue.id %}">
+									<a target="_blank" href="{% url 'issue_detail' project_id issue.id %}">
 										{{ issue.subject }}
 									</a>
 								</div>
