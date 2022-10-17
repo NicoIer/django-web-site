@@ -336,32 +336,7 @@
 		<script type="text/javascript" src="{% static 'web/js/util.js' %}"></script>
 		<script>
             function SubmitBtnClick() {
-                const check_data = form_check('#add_form');
-                const issue_data = check_data['data'];
-                console.log(issue_data)
-                $.ajax({
-                    url: '{% url 'issue_form_check' project_id %}',//
-                    type: 'post',
-                    data: issue_data,
-                    success: function (res) {
-                        console.log(res);
-                        if (res.status) {
-                            console.log('成功')
-                            location.reload();
-                        } else {
-                            console.log(res.error);
-                            console.log('失败');
-                            $.each(res.error, function (key, value) {
-                                const id_ = $('#id_' + key);
-                                setTimeout(function () {
-                                    id_.popover('hide')
-                                }, 3000);
-                                id_.attr('data-content', value);
-                                id_.popover('show');
-                            })
-                        }
-                    }
-                })
+                submitForm('#add_form', '{% url 'issue_form_check' project_id %}', 'post')
             }
 
 		</script>

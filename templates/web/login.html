@@ -33,29 +33,7 @@
 	<script type="text/javascript" src="{% static 'web/js/util.js' %}"></script>
 	<script>
         function LoginBtnClick() {
-            const check_data = form_check('#login_form');
-            const login_data = check_data['data'];
-            $.ajax({
-                url: '{% url 'login' %}',
-                type: 'post',
-                data: login_data,
-                success: function (res) {
-                    if (res.status) {
-                        console.log('成功')
-                        location.href = res.href
-                    } else {
-                        console.log('失败')
-                        $.each(res.error, function (key, value) {
-                            const id_ = $('#id_' + key);
-                            setTimeout(function () {
-                                id_.popover('hide')
-                            }, 3000);
-                            id_.attr('data-content', value)
-                            id_.popover('show')
-                        })
-                    }
-                }
-            })
+            submitForm('#login_form', '{% url 'login' %}', 'post')
         }
 	</script>
 {% endblock js %}

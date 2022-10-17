@@ -166,24 +166,8 @@
 	<script type="text/javascript" src="{% static 'web/js/util.js' %}"></script>
 	<script>
         function SubmitBtnClick() {
-            const check_data = form_check('#edit_form');
-            const issue_data = check_data['data'];
-            console.log(issue_data)
-            $.ajax({
-                url: '{% url 'issue_detail' project_id issue_id %}',
-                method: 'post',
-                data: issue_data,
-                success: function (res) {
-                    console.log(res)
-                    if (res.status) {
-                        location.reload()
-                    } else {
-
-                    }
-                }
-            })
+            submitForm('#edit_form', '{% url 'issue_detail' project_id issue_id %}', 'post')
         }
-
 	</script>
 
 	<script>
