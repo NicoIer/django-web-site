@@ -60,10 +60,9 @@ def issues_home(request, project_id):
 def issue_detail(request, project_id, issue_id):
     try:
         project = models.Project.objects.get(id=project_id)
+        issue = models.Issues.objects.get(id=issue_id)  # 查询当前issue的内容
     except Exception:
         return redirect('project_list')
-    # 查询当前issue的内容
-    issue = models.Issues.objects.get(id=issue_id)
 
     if request.method == 'GET':
         form = IssuesModelForm(instance=issue, project=project, method='GET')
@@ -93,3 +92,26 @@ def issue_from_check(request, project_id):
             return JsonResponse({'status': True})
         else:
             return JsonResponse({'status': False, 'error': form.errors})
+
+
+@check_login
+def issue_record(request, project_id, issue_id):
+    try:
+        project = models.Project.objects.get(id=project_id)
+        issue = models.Issues.objects.get(id=issue_id, project_id=project_id)  # 查询当前issue
+    except Exception:
+        return redirect('project_list')
+    # 获取当前issue的所有评论
+    if request.method == 'GET':
+        replies = issue.issuereply_set.all()
+        data_list = []
+        for row in replies:
+            data = {
+                'id': row.id,
+                'reply_type_text': row.get_reply_type_display(),
+                'content': row.content,
+                'creator': row.creator,
+                'datetime': row.create_datetime.strftime('%Y-%m-%d %H:%M')
+            }
+            data_list.append(data)
+        return JsonResponse({'data': data_list})

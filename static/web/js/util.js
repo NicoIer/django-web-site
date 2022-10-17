@@ -19,7 +19,12 @@ function submitForm(form_id, url, method) {
         data: form_data,
         success: function (res) {
             if (res.status) {
-                location.reload()
+                if (res.href) {
+                    location.href = res.href
+                } else {
+                    location.reload()
+                }
+
             } else {
                 $.each(res.error, function (key, value) {
                     const id_ = $('#id_' + key);

@@ -89,7 +89,28 @@
         }
 
         function onRegisterFormSubmit() {
-            submitForm('#register_form', '{% url 'register' %}', 'post')
+            const check_data = form_check('#register_form')
+            const register_data = check_data['data'];
+            $.ajax({
+                url: '{% url 'register' %}',
+                type: 'post',
+                data: register_data,
+                success: function (res) {
+                    if (res.status) {
+                        location.href = res.href
+                    } else {
+                        //console.log(res.status)
+                        $.each(res.error, function (key, value) {
+                            const id_ = $('#id_' + key);
+                            setTimeout(function () {
+                                id_.popover('hide')
+                            }, 3000);
+                            id_.attr('data-content', value)
+                            id_.popover('show')
+                        })
+                    }
+                },
+            })
         }
 	</script>
 {% endblock js %}

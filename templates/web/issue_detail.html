@@ -173,8 +173,9 @@
 	<script>
         IMAGE_UPLOAD_URL = '{% url 'image_upload' project_id %}';
         $(function () {
-            init_markdown()// init markdown
+            init_markdown();// init markdown
             initDatePicker();
+            initIssueRecord();
         });
 
         function initDatePicker() {
@@ -218,6 +219,18 @@
 
         function saveDesc() {
             console.log('点击了markdown save按钮')
+        }
+
+        function initIssueRecord() {
+            //初始化问题评论
+            $.ajax({
+                url: '{% url 'issue_record' project_id issue_id %}',
+                type: 'GET',
+                dataType: 'JSON',
+                success: function (res) {
+                    console.log(res)
+                }
+            })
         }
 	</script>
 {% endblock js %}

@@ -5,7 +5,28 @@
 	<script type="text/javascript" src="{% static 'web/js/util.js' %}"></script>
 	<script>
         function SubmitBtnClick() {
-            submitForm('add_wiki_form', '{% url 'wiki_edit' project.id wiki_id%}', 'post')
+            const check_data = form_check('#add_wiki_form');
+            const wiki_data = check_data['data'];
+            $.ajax({
+                url: '{% url 'wiki_edit' project.id wiki_id%}',
+                type: 'post',
+                data: wiki_data,
+                success: function (res) {
+                    if (res.status) {
+                        console.log('success')
+                        location.href = res.href
+                    } else {
+                        $.each(res.error, function (key, value) {
+                            const id_ = $('#id_' + key);
+                            setTimeout(function () {
+                                id_.popover('hide')
+                            }, 3000);
+                            id_.attr('data-content', value)
+                            id_.popover('show')
+                        })
+                    }
+                }
+            })
         }
 	</script>
 

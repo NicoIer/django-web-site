@@ -9,6 +9,7 @@ manage_urls = [
     path('issues/', issues.issues_home, name='issues'),
     path('issues/check/', issues.issue_from_check, name='issue_form_check'),
     re_path(r'issues/detail/(?P<issue_id>\d+)/', issues.issue_detail, name='issue_detail'),
+    re_path(r'issues/record/(?P<issue_id>\d+)/', issues.issue_record, name='issue_record'),
 
     path('statistics/', manage.dashboard, name='statistics'),
 
