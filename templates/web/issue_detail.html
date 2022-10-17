@@ -1,6 +1,60 @@
 {% extends 'web/issue_home.html' %}
 {% load static %}
 {% block css %}
+	<style>
+        .comment-area .item {
+            margin-top: 20px;
+        }
+
+        .comment-area .left-avatar {
+            float: left;
+            margin-right: 10px;
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background-color: #304659;
+            color: white;
+            text-align: center;
+            line-height: 30px;
+            border-radius: 50%;
+        }
+
+        .comment-area .right-info {
+            padding-left: 35px;
+        }
+
+        .comment-area .right-info .desc .msg {
+            display: inline-block;
+            padding-right: 20px;
+            color: #8c8c8c;
+        }
+
+        .comment-area .child {
+            padding-left: 55px;
+        }
+
+        .comment-area .error-msg {
+            color: red;
+        }
+
+        .comment-area .reply-user {
+            display: inline-block;
+            background-color: #dddddd;
+            color: black;
+            padding: 6px 8px;
+            margin-left: 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .msg {
+
+        }
+
+        .editmd-fullscreen {
+            z-index: 1001;
+        }
+	</style>
 {% endblock css %}
 
 
@@ -14,7 +68,7 @@
 				<div class="panel-body">
 					<form id="edit_form" class="form-horizontal" novalidate>
 						{% csrf_token %}
-
+						
 						<div class="form-group">
 							<label for="{{ form.issues_type.id_for_label }}" class="col-sm-2 control-label">
 								{{ form.issues_type.label }}
@@ -39,7 +93,7 @@
 								{{ form.subject }}
 							</div>
 						</div>
-
+						
 						<div class="form-group clearfix">
 							<label for="{{ form.desc.id_for_label }}" class="col-sm-2 control-label">
 								{{ form.desc.label }}
@@ -50,10 +104,10 @@
 										{{ form.desc }}
 									</div>
 								</div>
-
+							
 							</div>
 						</div>
-
+						
 						<div class="form-group clearfix">
 							<div class="col-md-6 pd-0">
 								<label for="{{ form.status.id_for_label }}" class="col-md-4 control-label">
@@ -72,7 +126,7 @@
 								</div>
 							</div>
 						</div>
-
+						
 						<div class="form-group clearfix">
 							<div class="col-md-6 pd-0">
 								<label for="{{ form.assign.id_for_label }}" class="col-md-4 control-label">
@@ -91,7 +145,7 @@
 								</div>
 							</div>
 						</div>
-
+						
 						<div class="form-group clearfix">
 							<div class="col-md-6 pd-0">
 								<label for="{{ form.start_date.id_for_label }}" class="col-md-4 control-label">
@@ -118,7 +172,7 @@
 								</div>
 							</div>
 						</div>
-
+						
 						<div class="form-group clearfix">
 							<div class="col-md-6 pd-0">
 								<label for="{{ form.mode.id_for_label }}" class="col-md-4 control-label">
@@ -143,7 +197,7 @@
 						        onclick="SubmitBtnClick()">修改
 						</button>
 					</div>
-
+				
 				</div>
 			</div>
 		</div>
@@ -152,14 +206,58 @@
 				<div class="panel panel-heading" style="margin-bottom: 0;">
 					<span class="glyphicon glyphicon-paperclip">操作记录</span>
 				</div>
-				<div class="panel-body" style="margin-top: 0;">
+				<div class="panel-body comment-area" style="margin-top: 0;">
+					<div class="comment-list">
 
+					</div>
+					<hr/>
+					<div class="comment-text" id="commentText">
+						{#						ToDo 将这个评论回复用ModelForm渲染#}
+						<div class="form-group">
+							{% csrf_token %}
+							<label for="content"></label>
+							<textarea id="content" rows="6" class="form-control"
+							          placeholder="请输入要回复的内容"></textarea>
+							<span class="error-msg"></span>
+						</div>
+						<input class="btn btn-primary" type="button" onclick="console.log('回复按钮点击')"
+						       value="提交">
+						<div class="reply-user hide" id="replyUser">
+							回复<span></span>
+							<i class="fa fa-times-circle" aria-hidden="true" style="color: #9d9d9d;"></i>
+						</div>
+					</div>
 				</div>
-
+			
 			</div>
 		</div>
 	</div>
-
+	<div class="hide" id="record_template">
+		<div class="item clearfix">
+			<div class="left-avatar"></div>
+			<div class="right-info">
+				<pre></pre>
+				<div class="desc">
+					<div class="msg">
+						<i class="fa fa-bullhorn" aria-hidden="true"></i>
+						<span class="type"></span>
+					</div>
+					<div class="msg">
+						<i class="fa fa-user" aria-hidden="true"></i>
+						<span class="user"></span>
+					</div>
+					<div class="msg">
+						<i class="fa fa-clock" aria-hidden="true"></i>
+						<span class="date"></span>
+					</div>
+					<a href="#commentText" class="reply">
+						<i class="fa fa-commenting-o" aria-hidden="true"></i>回复
+					</a>
+				</div>
+			</div>
+			<div class="child"></div>
+		</div>
+	</div>
 {% endblock content %}
 
 {% block js %}
@@ -169,7 +267,7 @@
             submitForm('#edit_form', '{% url 'issue_detail' project_id issue_id %}', 'post')
         }
 	</script>
-
+	
 	<script>
         IMAGE_UPLOAD_URL = '{% url 'image_upload' project_id %}';
         $(function () {
@@ -228,9 +326,33 @@
                 type: 'GET',
                 dataType: 'JSON',
                 success: function (res) {
-                    console.log(res)
+                    console.log(res);
+                    if (res.status) {
+                        $.each(res.data, function (idx, item) {
+                            createRecord(item);
+                        })
+                    } else {
+
+                    }
                 }
             })
+        }
+
+        function createRecord(data) {
+            const record_template = $('#record_template').find('.item').clone();
+            record_template.find('.left-avatar').html(data.creator[0].toUpperCase());
+            record_template.find('> div.right-info > pre').html(data.content);
+            record_template.find('.user').html(data.creator);
+            record_template.find('.type').html(data.reply_type_text);
+            record_template.find('.date').html(data.datetime);
+            record_template.attr({id: data.id, username: data.creator});
+            if (data.parent_id) {
+                console.log(data.parent_id)
+                $('#' + data.parent_id).children('.child').append(record_template)
+            } else {
+                $('.comment-list').append(record_template)
+            }
+
         }
 	</script>
 {% endblock js %}

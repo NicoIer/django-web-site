@@ -1,3 +1,5 @@
+import json
+
 from django.core.paginator import Page, Paginator, PageNotAnInteger, InvalidPage, EmptyPage
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
@@ -107,11 +109,12 @@ def issue_record(request, project_id, issue_id):
         data_list = []
         for row in replies:
             data = {
+                'parent_id': row.parent_issue_reply_id,
                 'id': row.id,
                 'reply_type_text': row.get_reply_type_display(),
                 'content': row.content,
-                'creator': row.creator,
+                'creator': row.creator.username,
                 'datetime': row.create_datetime.strftime('%Y-%m-%d %H:%M')
             }
             data_list.append(data)
-        return JsonResponse({'data': data_list})
+        return JsonResponse({'status': True, 'data': data_list})
