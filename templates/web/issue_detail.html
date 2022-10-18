@@ -213,16 +213,18 @@
 					<hr/>
 					<div class="comment-text" id="commentText">
 						{#						ToDo 将这个评论回复用ModelForm渲染#}
-						<div class="form-group">
+						<form id="reply_form" novalidate>
 							{% csrf_token %}
-							<label for="content"></label>
-							<textarea id="content" rows="6" class="form-control"
-							          placeholder="请输入要回复的内容"></textarea>
-							<span class="error-msg"></span>
-						</div>
-						<input class="btn btn-primary" type="button" onclick="console.log('回复按钮点击')"
+							<div class="form-group">
+								<label for="content"></label>
+								<textarea name="content" id="content" rows="6" class="form-control"
+								          placeholder="请输入要回复的内容"></textarea>
+								<span class="error-msg"></span>
+							</div>
+						</form>
+						<input class="btn btn-primary" type="button" onclick="onSubmitReplyClicked()"
 						       value="提交">
-						<div class="reply-user hide" id="replyUser">
+						<div class="reply-user hide" id="replyUser" onclick="onCancelClicked(this)">
 							回复<span></span>
 							<i class="fa fa-times-circle" aria-hidden="true" style="color: #9d9d9d;"></i>
 						</div>
@@ -233,7 +235,7 @@
 		</div>
 	</div>
 	<div class="hide" id="record_template">
-		<div class="item clearfix">
+		<div class="item clearfix" id="">
 			<div class="left-avatar"></div>
 			<div class="right-info">
 				<pre></pre>
@@ -250,7 +252,7 @@
 						<i class="fa fa-clock" aria-hidden="true"></i>
 						<span class="date"></span>
 					</div>
-					<a href="#commentText" class="reply">
+					<a href="#commentText" class="reply" onclick="onReplyClicked(this)">
 						<i class="fa fa-commenting-o" aria-hidden="true"></i>回复
 					</a>
 				</div>
@@ -262,10 +264,44 @@
 
 {% block js %}
 	<script type="text/javascript" src="{% static 'web/js/util.js' %}"></script>
-	<script>
-        function SubmitBtnClick() {
-            submitForm('#edit_form', '{% url 'issue_detail' project_id issue_id %}', 'post')
+	<script>function onSubmitReplyClicked() {
+        const check_data = form_check('#reply_form');
+        let form_data = check_data['data'];
+        const parent_id = $('#replyUser').attr('parent-id')
+        if (parent_id) {
+            form_data.push({'name': 'parent_issue_reply', 'value': parent_id});
         }
+
+        console.log(form_data)
+        $.ajax({
+            url: '{% url 'issue_record' project_id issue_id %}',
+            type: 'POST',
+            data: form_data,
+            dataType: 'JSON',
+            success: function (res) {
+                console.log(res);
+                if (res.status) {
+                    createRecord(res.info);
+                }
+            }
+        })
+    }
+
+    function onCancelClicked(param) {
+        $(param).addClass('hide').removeAttr('parent-id').children('span').text("");
+    }
+
+    function onReplyClicked(button) {
+        const item = $(button).parent().parent().parent();
+        const id = item.attr('id');
+        const user_name = item.attr('username')
+        // 添加span的js......
+        $('#replyUser').removeClass('hide').attr('parent-id', id).children('span').text(user_name);
+    }
+
+    function SubmitBtnClick() {
+        submitForm('#edit_form', '{% url 'issue_detail' project_id issue_id %}', 'post')
+    }
 	</script>
 	
 	<script>

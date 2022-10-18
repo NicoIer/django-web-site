@@ -6,6 +6,12 @@ from web.forms.bootstrap import BootstrapForm
 from web.models import Issues
 
 
+class IssueReplyModelForm(forms.ModelForm):
+    class Meta:
+        model = models.IssueReply
+        fields = ['content', 'parent_issue_reply']
+
+
 class IssuesModelForm(BootstrapForm, forms.ModelForm):
     class Meta:
         model = Issues

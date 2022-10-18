@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 
 from web import models
 from web.utils import check_login
-from web.forms.issues import IssuesModelForm
+from web.forms.issues import IssuesModelForm, IssueReplyModelForm
 
 
 @check_login
@@ -118,3 +118,21 @@ def issue_record(request, project_id, issue_id):
             }
             data_list.append(data)
         return JsonResponse({'status': True, 'data': data_list})
+    elif request.method == 'POST':
+        form = IssueReplyModelForm(data=request.POST)
+        form.instance.issues_id = issue_id
+        form.instance.reply_type = 2
+        form.instance.creator = request.tracer.user
+        if form.is_valid():
+            instance = form.save()
+            info = {
+                'id': instance.id,
+                'reply_type_text': instance.get_reply_type_display(),
+                'content': instance.content,
+                'creator': instance.creator.username,
+                'datetime': instance.create_datetime.strftime('%Y-%m-%d %H:%M'),
+                'parent_id': instance.parent_issue_reply_id
+            }
+            return JsonResponse({'status': True, 'info': info})
+        else:
+            return JsonResponse({'status': False, 'error': form.errors})
