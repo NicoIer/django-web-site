@@ -308,16 +308,37 @@
 
     function SubmitBtnClick() {
         submitForm('#edit_form', '{% url 'issue_detail' project_id issue_id %}', 'post')
+        // ToDo 提交表单的时候,将更新的部分添加到回复区....视频的里操作有点笨..不想照着抄
+        //大致思路是 维持一个dict,记录每个form-control的变化情况
+        //按下提交按钮时,也向后台发生添加回复的请求
+
+
+    }
+
+    function bindChanges() {
+        //form-control是后台form生成的
+        $('#edit_form').find('.form-control').change(function () {
+            const postDict = {name: $(this).attr('name'), value: $(this).val()};
+            console.log(postDict);
+        })
+    }
+
+    function saveDesc() {
+        const postDict = {name: 'desc', value: EDITER.getValue()};
+        console.log(postDict);
     }
 	</script>
 	
 	<script>
-        IMAGE_UPLOAD_URL = '{% url 'image_upload' project_id %}';
+        let IMAGE_UPLOAD_URL = '{% url 'image_upload' project_id %}';
+        let EDITER;
         $(function () {
             init_markdown();// init markdown
             initDatePicker();
             initIssueRecord();
+            bindChanges();
         });
+
 
         function initDatePicker() {
             $('#id_start_date').datepicker({
@@ -336,7 +357,7 @@
 
         function init_markdown() {
             // id + 配置
-            editormd('markdown_edit', {
+            EDITER = editormd('markdown_edit', {
                 placeholder: '请输入内容',
                 height: 500,
                 emoji: false,
@@ -358,9 +379,6 @@
             });
         }
 
-        function saveDesc() {
-            console.log('点击了markdown save按钮')
-        }
 
         function initIssueRecord() {
             //初始化问题评论
@@ -369,7 +387,6 @@
                 type: 'GET',
                 dataType: 'JSON',
                 success: function (res) {
-                    console.log(res);
                     if (res.status) {
                         $.each(res.data, function (idx, item) {
                             createRecord(item);
@@ -390,7 +407,6 @@
             record_template.find('.date').html(data.datetime);
             record_template.attr({id: data.id, username: data.creator});
             if (data.parent_id) {
-                console.log(data.parent_id)
                 $('#' + data.parent_id).children('.child').append(record_template)
             } else {
                 $('.comment-list').append(record_template)

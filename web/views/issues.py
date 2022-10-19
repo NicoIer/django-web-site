@@ -5,6 +5,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 
 from web import models
+from web.models import Issues
 from web.utils import check_login
 from web.forms.issues import IssuesModelForm, IssueReplyModelForm
 
@@ -65,14 +66,14 @@ def issue_detail(request, project_id, issue_id):
         issue = models.Issues.objects.get(id=issue_id)  # 查询当前issue的内容
     except Exception:
         return redirect('project_list')
-
     if request.method == 'GET':
         form = IssuesModelForm(instance=issue, project=project, method='GET')
         return render(request, 'web/issue_detail.html', locals())
     elif request.method == 'POST':
-        # 编辑
+        # 编辑issue
         form = IssuesModelForm(instance=issue, project=project, method='POST', data=request.POST)
         if form.is_valid():
+            # 简单添加一个reply
             form.save()
             return JsonResponse({'status': True})
         else:
@@ -106,17 +107,14 @@ def issue_record(request, project_id, issue_id):
     # 获取当前issue的所有评论
     if request.method == 'GET':
         replies = issue.issuereply_set.all()
-        data_list = []
-        for row in replies:
-            data = {
-                'parent_id': row.parent_issue_reply_id,
-                'id': row.id,
-                'reply_type_text': row.get_reply_type_display(),
-                'content': row.content,
-                'creator': row.creator.username,
-                'datetime': row.create_datetime.strftime('%Y-%m-%d %H:%M')
-            }
-            data_list.append(data)
+        data_list = list(map(lambda x: {
+            'parent_id': x.parent_issue_reply_id,
+            'id': x.id,
+            'reply_type_text': x.get_reply_type_display(),
+            'content': x.content,
+            'creator': x.creator.username,
+            'datetime': x.create_datetime.strftime('%Y-%m-%d %H:%M')}, replies))
+
         return JsonResponse({'status': True, 'data': data_list})
     elif request.method == 'POST':
         form = IssueReplyModelForm(data=request.POST)
