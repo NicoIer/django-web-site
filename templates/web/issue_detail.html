@@ -272,7 +272,7 @@
             form_data.push({'name': 'parent_issue_reply', 'value': parent_id});
         }
 
-        console.log(form_data)
+        $('#commentText .error-msg').text("");
         $.ajax({
             url: '{% url 'issue_record' project_id issue_id %}',
             type: 'POST',
@@ -282,6 +282,13 @@
                 console.log(res);
                 if (res.status) {
                     createRecord(res.info);
+                    $('#content').val('');
+                    $('#replyUser').addClass('hide').removeAttr('parent-id').children('span').text('');
+                } else {
+                    $.each(res.error, function (k, v) {
+                        $('#content').next('.error-msg').text(v[0]);
+                    })
+                    console.log(res.error)
                 }
             }
         })
